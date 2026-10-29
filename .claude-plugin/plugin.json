@@ -1,0 +1,20 @@
+{
+  "name": "image-passage",
+  "version": "0.1.0",
+  "description": "Plan and produce image-plus-text carousel posts for Xiaohongshu and WeChat 贴图号: planning, page-by-page images (native / HTML-SVG / external API), publish copy and QA.",
+  "author": {
+    "name": "chans-gh"
+  },
+  "homepage": "https://github.com/chans-gh/Image-Passage-IP",
+  "repository": "https://github.com/chans-gh/Image-Passage-IP",
+  "license": "MIT",
+  "keywords": [
+    "xiaohongshu",
+    "wechat",
+    "carousel",
+    "content",
+    "image-generation",
+    "小红书",
+    "图文"
+  ]
+}

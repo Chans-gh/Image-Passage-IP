@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "project": "{{PROJECT}}",
+  "created": "",
+  "updated": "",
+  "platform": "{{PLATFORM}}",
+  "scope": "full",
+  "render": {
+    "mode": null,
+    "locked": false,
+    "capabilities": {"generate": null, "see": null, "scripts": null},
+    "qa_mode": null,
+    "tool": null,
+    "model": null,
+    "size": null,
+    "quality": null,
+    "seed": null
+  },
+  "config": {
+    "D": null, "R": null, "I": null, "F": null, "T": null, "H": null,
+    "V": null, "C": null, "K": null, "W": null, "S": null,
+    "pages_total": null,
+    "pagenum": "B",
+    "character": null
+  },
+  "plan": {"version": 0, "confirmed": false, "confirmed_version": null, "confirmed_by": null},
+  "anchors": {
+    "P1": {"version": null, "status": null},
+    "inner": {"page": null, "version": null}
+  },
+  "authorization": {
+    "skip_plan_confirm": false,
+    "skip_p1_confirm": false,
+    "continue_all": false,
+    "note": ""
+  },
+  "pages": {},
+  "copy": {"version": 0, "synced_with_pages": false},
+  "log": []
+}

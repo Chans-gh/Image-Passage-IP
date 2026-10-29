@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>{{PAGE}}</title>
+<!-- H 底图＋叠加页：底图由生图模型生成（base.png），文字和真实素材由代码叠加。 -->
+<link rel="stylesheet" href="../../render/base.css">
+<link rel="stylesheet" href="../../render/tokens.css">
+</head>
+<body>
+<main class="page compose v01">
+  <img class="base-layer" src="base.png" alt="">
+
+  <!-- 区域坐标与底图提示词里「留白区」的位置一致 -->
+  <div class="zone plate" style="left:64px; top:96px; width:1114px;">
+    <h1 class="t-title">页面标题</h1>
+    <p class="t-body">准确的正文文字</p>
+  </div>
+
+  <!-- 真实截图原样嵌入，不交给生图模型重画 -->
+  <!-- <div class="zone" style="left:96px; top:560px; width:1050px; height:760px;">
+         <div class="photo contain" style="height:100%"><img src="../../inputs/shot.png" alt=""></div>
+       </div> -->
+
+  <div class="pagenum">{{NUM}} / {{TOTAL}}</div>
+</main>
+</body>
+</html>

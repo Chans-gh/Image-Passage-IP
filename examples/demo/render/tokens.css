@@ -1,0 +1,12 @@
+/* 由 palette.py 生成：风格锁的精确版。同一套图内不要逐页修改。 */
+:root {
+  --c-bg: #F5EFE3; /* 暖米白 */
+  --c-surface: #FFFFFF; /* 纯白 */
+  --c-text: #3A3A3C; /* 炭灰 */
+  --c-primary: #9CAF88; /* 鼠尾草绿 */
+  --c-accent: #F28C6B; /* 珊瑚橙 */
+  --c-highlight: #F6E7B4; /* 奶油黄 */
+  --f-title: "Noto Sans SC", "WenQuanYi Zen Hei", sans-serif; /* 思源黑体 */
+  --f-body: "Noto Sans SC", "WenQuanYi Zen Hei", sans-serif; /* 思源黑体 */
+  --f-hand: "LXGW WenKai", "Noto Sans SC", "WenQuanYi Zen Hei", sans-serif; /* 霞鹜文楷 */
+}

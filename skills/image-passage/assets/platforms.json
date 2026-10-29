@@ -1,0 +1,24 @@
+{
+ "version": 1,
+ "note": "平台上限是外部硬约束。null 表示尚未在 App 内核实：此时只按项目默认执行，并在交付时提醒用户发布前以 App 实际限制为准。核实后同时更新 references/platforms/*.md。",
+ "xiaohongshu": {
+  "name": "小红书",
+  "canvas": [1242, 1656],
+  "ratio": "3:4",
+  "max_images": null,
+  "title_max": null,
+  "body_max": null,
+  "tags_max": null,
+  "verified": false
+ },
+ "wechat-tietu": {
+  "name": "微信贴图号",
+  "canvas": [1242, 1656],
+  "ratio": "3:4",
+  "max_images": null,
+  "title_max": null,
+  "body_max": null,
+  "tags_max": null,
+  "verified": false
+ }
+}

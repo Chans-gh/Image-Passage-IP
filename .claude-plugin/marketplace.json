@@ -1,0 +1,12 @@
+{
+  "name": "image-passage-ip",
+  "description": "Image Passage: image-plus-text post planning and production for Xiaohongshu and WeChat",
+  "owner": { "name": "chans-gh" },
+  "plugins": [
+    {
+      "name": "image-passage",
+      "source": "./",
+      "description": "小红书 / 微信贴图号整套图文的策划、出图、文案与质检"
+    }
+  ]
+}

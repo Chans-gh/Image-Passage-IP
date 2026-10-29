@@ -1,0 +1,5 @@
+interface:
+  display_name: "Image Passage 图文策划"
+  short_description: "小红书 / 微信贴图号整套图文的策划、出图、文案与质检"
+  brand_color: "#7C9A82"
+  default_prompt: "用 SOP 帮我做一套图文"

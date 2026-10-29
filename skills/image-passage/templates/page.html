@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>{{PAGE}}</title>
+<!-- S 纯排版页。路径相对于 <项目>/pages/{{PAGE}}/ -->
+<link rel="stylesheet" href="../../render/base.css">
+<link rel="stylesheet" href="../../render/tokens.css">
+</head>
+<body>
+<!-- 风格类 v01–v12，版式类 l-*，见 references/html-recipes.md -->
+<main class="page v03 l-list">
+  <header class="header">
+    <h1 class="t-title">页面标题</h1>
+  </header>
+
+  <section class="groups grow">
+    <div class="group">
+      <h3>分组标题</h3>
+      <ul class="dots t-body">
+        <li>要点一</li>
+        <li>要点二</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="source"><b>来源</b>来源名称 · 2026-10</footer>
+  <div class="pagenum">{{NUM}} / {{TOTAL}}</div>
+</main>
+</body>
+</html>

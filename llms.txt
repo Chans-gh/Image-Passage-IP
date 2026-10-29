@@ -1,0 +1,45 @@
+# Image Passage
+
+> Agent Skill and WorkBuddy expert that plans and produces 3:4 image-plus-text carousel posts for Xiaohongshu (小红书) and WeChat 贴图号: planning, page-by-page images (native image tool / HTML-SVG rendering / OpenAI-compatible image API), publish copy and QA. Rule files are in Simplified Chinese. MIT licensed.
+
+To use the skill, read skills/image-passage/SKILL.md first, then only the references the current stage needs. To maintain the repo, read AGENTS.md.
+
+## Entry points
+
+- [SKILL.md](skills/image-passage/SKILL.md): principles, stages ⓪–⑪, routes, scripts, reference index
+- [AGENTS.md](AGENTS.md): repo map, rule ownership, conventions, how to verify changes
+- [README.md](README.md): user intro and install (Chinese); [README.en.md](README.en.md) in English
+
+## References (rules)
+
+- [workflow.md](skills/image-passage/references/workflow.md): rule ownership, effective config, confirmation and authorization, stage steps, plan format, delivery report
+- [onboarding.md](skills/image-passage/references/onboarding.md): first-run options, profile fields A–H and their effects
+- [inputs.md](skills/image-passage/references/inputs.md): input forms, audio/video, material roles and credibility, rights and privacy
+- [content-templates.md](skills/image-passage/references/content-templates.md): topic domains D, reader values R, interaction I, templates T01–T23, formats F1–F5, hooks H, page roles
+- [visual-system.md](skills/image-passage/references/visual-system.md): styles V01–V12, layouts L01–L36, covers C, style parameters and style lock, elements E01–E39, colours and fonts, material fidelity
+- [copywriting.md](skills/image-passage/references/copywriting.md): title, body length tiers S0–S4, writing patterns W, voice K, tags, compliance, sources
+- [page-generation.md](skills/image-passage/references/page-generation.md): one page one image, composition G/H/S, page spec, per-page pipeline, failure and edits
+- [render-routing.md](skills/image-passage/references/render-routing.md): capability detection, render modes, .env variables
+- [prompt-recipes.md](skills/image-passage/references/prompt-recipes.md): image prompt structure for native/api routes
+- [html-recipes.md](skills/image-passage/references/html-recipes.md): HTML/CSS/SVG layout, classes, rendering and checks
+- [characters.md](skills/image-passage/references/characters.md): optional account character and asset prompt templates
+- [qa-checklist.md](skills/image-passage/references/qa-checklist.md): checks per stage and before publishing
+- [platforms/xiaohongshu.md](skills/image-passage/references/platforms/xiaohongshu.md), [platforms/wechat-tietu.md](skills/image-passage/references/platforms/wechat-tietu.md): platform limits (unverified) and habits
+
+## Scripts
+
+- [workspace.py](skills/image-passage/scripts/workspace.py): init / new / page / adopt / block / status / list
+- [render_page.py](skills/image-passage/scripts/render_page.py): HTML → 1242×1656 PNG with layout checks
+- [call_image_api.py](skills/image-passage/scripts/call_image_api.py): OpenAI-compatible image generation/edits, fit to 3:4, --dry-run
+- [image_tools.py](skills/image-passage/scripts/image_tools.py): fit / mask / sheet / info
+- [palette.py](skills/image-passage/scripts/palette.py): colour names → HEX, tokens.css
+- [check_copy.py](skills/image-passage/scripts/check_copy.py): copy length, tags, compliance words
+- [extract_input.py](skills/image-passage/scripts/extract_input.py): doc / frames / audio / transcribe
+- [ocr_check.py](skills/image-passage/scripts/ocr_check.py), [fetch_fonts.py](skills/image-passage/scripts/fetch_fonts.py), [env_check.py](skills/image-passage/scripts/env_check.py)
+
+## Optional
+
+- [templates/](skills/image-passage/templates/): project file templates
+- [assets/](skills/image-passage/assets/): colors.json, fonts.json, platforms.json, css/base.css
+- [examples/demo/](examples/demo/README.md): 5-page svg-route demo
+- [docs/](docs/00_基础方案.md): design docs and the archived V3.1 source rules

@@ -1,0 +1,13 @@
+# 用户密钥与工作区（不提交）
+.env
+.env.*
+!.env.example
+image-passage-work/
+
+# 字体缓存与渲染产物
+.fonts/
+*.pyc
+__pycache__/
+node_modules/
+.DS_Store
+examples/demo/render/base.css

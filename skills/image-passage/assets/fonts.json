@@ -1,0 +1,94 @@
+{
+ "version": 1,
+ "note": "只使用 SIL Open Font License（OFL）授权、可免费商用的字体。由 scripts/fetch_fonts.py 按需下载到字体缓存目录，不随仓库分发。",
+ "fonts": [
+  {
+   "id": "noto-sans-sc",
+   "family": "Noto Sans SC",
+   "zh": "思源黑体",
+   "role": "通用标题、正文（无衬线）",
+   "default": true,
+   "file": "NotoSansSC-VF.ttf",
+   "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf",
+   "license": "OFL-1.1",
+   "weight": "100 900"
+  },
+  {
+   "id": "lxgw-wenkai",
+   "family": "LXGW WenKai",
+   "zh": "霞鹜文楷",
+   "role": "文艺正文、手写感标题、批注",
+   "default": true,
+   "file": "LXGWWenKai-Regular.ttf",
+   "url": "https://github.com/lxgw/LxgwWenKai/releases/latest/download/LXGWWenKai-Regular.ttf",
+   "license": "OFL-1.1",
+   "weight": "400"
+  },
+  {
+   "id": "noto-serif-sc",
+   "family": "Noto Serif SC",
+   "zh": "思源宋体",
+   "role": "书页、杂志、引文（衬线）",
+   "default": false,
+   "file": "NotoSerifSC-VF.ttf",
+   "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifsc/NotoSerifSC%5Bwght%5D.ttf",
+   "license": "OFL-1.1",
+   "weight": "200 900"
+  },
+  {
+   "id": "zcool-kuaile",
+   "family": "ZCOOL KuaiLe",
+   "zh": "站酷快乐体",
+   "role": "活泼标题（插画、漫画、趣味）",
+   "default": false,
+   "file": "ZCOOLKuaiLe-Regular.ttf",
+   "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/zcoolkuaile/ZCOOLKuaiLe-Regular.ttf",
+   "license": "OFL-1.1",
+   "weight": "400"
+  },
+  {
+   "id": "zcool-qingke-huangyou",
+   "family": "ZCOOL QingKe HuangYou",
+   "zh": "站酷庆科黄油体",
+   "role": "粗圆大字（字报、封面）",
+   "default": false,
+   "file": "ZCOOLQingKeHuangYou-Regular.ttf",
+   "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/zcoolqingkehuangyou/ZCOOLQingKeHuangYou-Regular.ttf",
+   "license": "OFL-1.1",
+   "weight": "400"
+  },
+  {
+   "id": "zcool-xiaowei",
+   "family": "ZCOOL XiaoWei",
+   "zh": "站酷小薇",
+   "role": "优雅标题（杂志、书页）",
+   "default": false,
+   "file": "ZCOOLXiaoWei-Regular.ttf",
+   "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/zcoolxiaowei/ZCOOLXiaoWei-Regular.ttf",
+   "license": "OFL-1.1",
+   "weight": "400"
+  },
+  {
+   "id": "long-cang",
+   "family": "Long Cang",
+   "zh": "龙藏体",
+   "role": "手写批注、手绘大字报",
+   "default": false,
+   "file": "LongCang-Regular.ttf",
+   "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/longcang/LongCang-Regular.ttf",
+   "license": "OFL-1.1",
+   "weight": "400"
+  },
+  {
+   "id": "ma-shan-zheng",
+   "family": "Ma Shan Zheng",
+   "zh": "马善政毛笔楷书",
+   "role": "毛笔标题（国风、节气）",
+   "default": false,
+   "file": "MaShanZheng-Regular.ttf",
+   "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/mashanzheng/MaShanZheng-Regular.ttf",
+   "license": "OFL-1.1",
+   "weight": "400"
+  }
+ ]
+}
