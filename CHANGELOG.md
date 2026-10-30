@@ -9,7 +9,7 @@
 - 首条评论：每篇默认交付一条由账号自己发出的首条评论（`copywriting.md` 第十四节）；`copy.md` 模板新增小节；`check_copy.py` 检查是否填写、长度（默认 ≤150 字）和合规用语。
 - 最终交付固定为四项：标题、正文（末尾附标签）、图片、首条评论（`copywriting.md` 第十二节、`workflow.md` 第七节）。
 - `workspace.py status` 检查页数是否超过平台图片上限。
-- WorkBuddy 上架材料 `docs/workbuddy-submission.md` 和检查打包工具 `tools/workbuddy_package.py`。
+- `INSTALL.md`：写给 AI 的安装步骤（Claude Code、Codex、WorkBuddy、其他 Agent），含依赖、字体、自检和卸载；README 增加「让 AI 帮你装」。
 - 专家头像改为作者提供的形象（不在 MIT 授权范围内）。
 
 ### 变更

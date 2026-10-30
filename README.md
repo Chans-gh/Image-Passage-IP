@@ -41,6 +41,14 @@
 
 ## 安装
 
+**让 AI 帮你装**：把下面这句话发给你正在用的 AI（Claude Code、Codex 等），它会按 [INSTALL.md](INSTALL.md) 一步步完成安装、依赖和自检：
+
+```text
+请按 https://github.com/chans-gh/Image-Passage-IP/blob/main/INSTALL.md 帮我安装 Image Passage
+```
+
+手动安装：
+
 ### Claude Code
 
 ```text
@@ -62,11 +70,7 @@ ln -s "$PWD/Image-Passage-IP/skills/image-passage" ~/.agents/skills/image-passag
 
 ### WorkBuddy
 
-仓库根目录的 `.codebuddy-plugin/plugin.json` 定义了专家「图文策划师」（身份与开场在 `agents/image-passage.md`，技能在 `skills/image-passage/`）。上架所需的字段、要求和打包命令见 [docs/workbuddy-submission.md](docs/workbuddy-submission.md)：
-
-```bash
-python3 tools/workbuddy_package.py zip
-```
+仓库根目录就是一个 WorkBuddy 专家包：`.codebuddy-plugin/plugin.json`（专家清单）、`agents/image-passage.md`（身份与开场）、`avatars/expert.png`（头像）、`skills/image-passage/`（预加载技能）。在 WorkBuddy 客户端「专家市场 → 我的专家 → 创建专家」中导入本仓库即可。
 
 ### 其他 Agent
 
@@ -145,11 +149,10 @@ skills/image-passage/    技能本体
 ├── scripts/             Python 脚本（渲染、质检、接口、素材提取）
 └── assets/              颜色表、字体表、平台预设、base.css
 examples/demo/           5 页演示（svg 路线）
-tools/                   维护工具（WorkBuddy 清单检查与打包）
-docs/                    设计文档、WorkBuddy 上架材料、V3.1 原始规则归档
+docs/                    设计文档与 V3.1 原始规则归档
 ```
 
-给 AI 的维护说明见 [AGENTS.md](AGENTS.md)，文件索引见 [llms.txt](llms.txt)。
+给 AI 的文档：安装步骤见 [INSTALL.md](INSTALL.md)，使用与维护说明见 [AGENTS.md](AGENTS.md)，文件索引见 [llms.txt](llms.txt)。
 
 ## 设计文档
 
@@ -159,7 +162,6 @@ docs/                    设计文档、WorkBuddy 上架材料、V3.1 原始规�
 | [docs/01_变量清单.md](docs/01_变量清单.md) | V3.1 规则中全部变量、类型与列举项盘点 |
 | [docs/02_变量核查与扩充.md](docs/02_变量核查与扩充.md) | 变量核查与扩充：主题、模板、篇幅、版式、风格参数、价值与互动、表达元素、封面、文案 |
 | [docs/03_运作流程.md](docs/03_运作流程.md) | 运作流程：初始化与个性化、输入形式与组合、出图方式与质检 |
-| [docs/workbuddy-submission.md](docs/workbuddy-submission.md) | WorkBuddy 上架材料：可复制的字段、要求、打包与自测清单 |
 | [docs/source-v3.1/](docs/source-v3.1/) | V3.1 原始规则归档（只读，迁移对照用） |
 
 ## 待完善

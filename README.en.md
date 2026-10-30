@@ -48,6 +48,14 @@ The skill's working language is Simplified Chinese, because the target platforms
 
 ## Install
 
+**Let your AI install it.** Send this to the agent you use (Claude Code, Codex, …). It will follow [INSTALL.md](INSTALL.md) to install the skill and dependencies and run a self-check:
+
+```text
+Please install Image Passage following https://github.com/chans-gh/Image-Passage-IP/blob/main/INSTALL.md
+```
+
+Manual install:
+
 ### Claude Code
 
 ```text
@@ -69,11 +77,7 @@ For a single project, link it into that project's `.agents/skills/` instead. `sk
 
 ### WorkBuddy
 
-`.codebuddy-plugin/plugin.json` defines the expert 「图文策划师」. Its identity and opening are in `agents/image-passage.md`, and the skill is in `skills/image-passage/`. Fields, requirements and the packaging command are in [docs/workbuddy-submission.md](docs/workbuddy-submission.md) (Chinese):
-
-```bash
-python3 tools/workbuddy_package.py zip
-```
+The repository root is a WorkBuddy expert package: `.codebuddy-plugin/plugin.json` (manifest), `agents/image-passage.md` (identity and opening), `avatars/expert.png` (avatar) and `skills/image-passage/` (preloaded skill). Import the repository in the WorkBuddy client under 专家市场 → 我的专家 → 创建专家.
 
 ### Other agents
 
@@ -152,8 +156,7 @@ skills/image-passage/    The skill
 ├── scripts/             Python scripts (render, QA, API, input extraction)
 └── assets/              Colour table, font table, platform presets, base.css
 examples/demo/           5-page demo (svg route)
-tools/                   Maintenance tools (WorkBuddy manifest check and packaging)
-docs/                    Design docs, WorkBuddy submission sheet (Chinese), archived V3.1 rules
+docs/                    Design docs (Chinese) and the archived V3.1 source rules
 ```
 
 Maintainer notes for AI agents are in [AGENTS.md](AGENTS.md). A file index is in [llms.txt](llms.txt).

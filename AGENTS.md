@@ -2,6 +2,10 @@
 
 Notes for AI agents (Claude Code, Codex, WorkBuddy and others) that **use** or **maintain** this repository. The user-facing intro is in [README.md](README.md) (Chinese) and [README.en.md](README.en.md).
 
+## If you are here to install it
+
+Follow [INSTALL.md](INSTALL.md): clone, link the skill for your host agent, install Python dependencies and Chromium, fetch fonts, run `env_check.py`, then report to the user in Chinese.
+
 ## If you are here to use the skill
 
 Read `skills/image-passage/SKILL.md` and follow it. It is the entry point; detailed rules live in `skills/image-passage/references/` and are read per stage, on demand. Do not read every reference up front.
@@ -22,8 +26,8 @@ Working language for users is Simplified Chinese. Work files go to `./image-pass
 | `.claude-plugin/` | Claude Code `plugin.json` and `marketplace.json` (marketplace `image-passage-ip`, plugin `image-passage`). |
 | `.codebuddy-plugin/plugin.json` | WorkBuddy expert manifest. |
 | `examples/demo/` | 5-page demo on the svg route; used as a regression check. |
-| `tools/workbuddy_package.py` | Checks `.codebuddy-plugin/plugin.json` against WorkBuddy's expert rules and builds the upload zip (`dist/`, gitignored). |
-| `docs/` | Design docs (00–03), `workbuddy-submission.md` (WorkBuddy listing fields and requirements) and `source-v3.1/`, the read-only archive of the original rules. Not loaded at runtime. |
+| `INSTALL.md` | Step-by-step install guide written for AI agents. Keep commands in sync with README and the scripts. |
+| `docs/` | Design docs (00–03) and `source-v3.1/`, the read-only archive of the original rules. Not loaded at runtime. |
 
 ## Where each rule is defined
 
@@ -40,7 +44,6 @@ Some rules are mirrored in code or data. Change both sides together:
 | Length tiers S0–S4, compliance word lists (`copywriting.md` §五, §九) | `scripts/check_copy.py` (`TIERS`, `ABSOLUTE`, `EFFICACY`, `FINANCE`, `INDUCE`) |
 | Platform limits (`references/platforms/*.md`) | `assets/platforms.json`; `scripts/check_copy.py` (title, body, tags); `scripts/workspace.py status` (image count); the limits line in SKILL.md principle 8 and the READMEs |
 | Final deliverables and first comment (`copywriting.md` §十二, §十四) | `templates/copy.md`; `scripts/check_copy.py` (`首条评论` section); `workflow.md` §七 report format |
-| WorkBuddy listing fields | `.codebuddy-plugin/plugin.json`; `docs/workbuddy-submission.md`; `tools/workbuddy_package.py` rules |
 | Composition G/H/S (`page-generation.md` §二) | `templates/spec.md` (构成方式 field); H layer structure in `templates/page-compose.html` and `base.css` (`.compose`, `.base-layer`, `.zone`) |
 | Render modes, `.env` variables (`render-routing.md` §二, §四) | `.env.example`; `scripts/env_check.py`; `scripts/call_image_api.py` |
 | Project files and state (`page-generation.md` §十, `SKILL.md`) | `scripts/workspace.py`; `templates/state.json` |
@@ -59,7 +62,8 @@ Some rules are mirrored in code or data. Change both sides together:
 - **Platform limits** were set by the author on 2026-10-30 (title 20, body 800, 15 images, 8 tags, both platforms). Change them only on the author's instruction or a confirmed platform change: update `platforms.json` (`verified_on`), the platform md files, and add a CHANGELOG entry.
 - **Final delivery is four parts in a fixed order**: title, body (tags at the end), images, first comment. Keep that order in rules, templates and reports.
 - **The avatar is the author's own image** and is excluded from the MIT license (see LICENSE). Do not replace, edit or reuse it without the author's instruction.
-- **Version** lives in `.claude-plugin/plugin.json`, `.codebuddy-plugin/plugin.json` and the SKILL.md `metadata.version`. Bump them together, update the version in the README badges line and `docs/workbuddy-submission.md`, and add a CHANGELOG entry.
+- **Version** lives in `.claude-plugin/plugin.json`, `.codebuddy-plugin/plugin.json` and the SKILL.md `metadata.version`. Bump them together, update the version in the README badges line, and add a CHANGELOG entry.
+- **WorkBuddy listing material** (submission forms, packaging zips, author contact) is kept outside this repository. Do not add it back.
 
 ## Verifying changes
 
@@ -90,12 +94,6 @@ Check copy rules:
 python3 skills/image-passage/scripts/check_copy.py examples/demo/copy.md
 ```
 
-Check the WorkBuddy manifest (fails until `author.email` is filled in):
-
-```bash
-python3 tools/workbuddy_package.py check
-```
-
 Smoke-test the workflow scripts in a scratch directory:
 
 ```bash
@@ -111,5 +109,5 @@ python3 <repo>/skills/image-passage/scripts/call_image_api.py --help
 
 ## Commit hygiene
 
-- Do not commit `.env`, `image-passage-work/`, `dist/`, font caches, `__pycache__/` or `examples/demo/render/base.css` (all gitignored).
+- Do not commit `.env`, `image-passage-work/`, font caches, `__pycache__/` or `examples/demo/render/base.css` (all gitignored).
 - Keep `examples/demo/` small (currently about 0.5 MB). Store final images as JPEG.

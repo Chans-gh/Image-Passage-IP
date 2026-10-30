@@ -2,10 +2,11 @@
 
 > Agent Skill and WorkBuddy expert that plans and produces 3:4 image-plus-text carousel posts for Xiaohongshu (小红书) and WeChat 贴图号: planning, page-by-page images (native image tool / HTML-SVG rendering / OpenAI-compatible image API), title, body, tags, first comment and QA. Rule files are in Simplified Chinese. MIT licensed.
 
-To use the skill, read skills/image-passage/SKILL.md first, then only the references the current stage needs. To maintain the repo, read AGENTS.md.
+To install it for a user, follow INSTALL.md. To use the skill, read skills/image-passage/SKILL.md first, then only the references the current stage needs. To maintain the repo, read AGENTS.md.
 
 ## Entry points
 
+- [INSTALL.md](INSTALL.md): step-by-step install for AI agents (Claude Code, Codex, WorkBuddy, others), dependencies, fonts, self-check
 - [SKILL.md](skills/image-passage/SKILL.md): principles, stages ⓪–⑪, routes, scripts, reference index
 - [AGENTS.md](AGENTS.md): repo map, rule ownership, conventions, how to verify changes
 - [README.md](README.md): user intro and install (Chinese); [README.en.md](README.en.md) in English
@@ -43,5 +44,3 @@ To use the skill, read skills/image-passage/SKILL.md first, then only the refere
 - [assets/](skills/image-passage/assets/): colors.json, fonts.json, platforms.json, css/base.css
 - [examples/demo/](examples/demo/README.md): 5-page svg-route demo
 - [docs/](docs/00_基础方案.md): design docs and the archived V3.1 source rules
-- [docs/workbuddy-submission.md](docs/workbuddy-submission.md): WorkBuddy listing fields, requirements, packaging and self-test checklist
-- [tools/workbuddy_package.py](tools/workbuddy_package.py): check the WorkBuddy manifest and build the upload zip
