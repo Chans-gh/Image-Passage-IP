@@ -5,7 +5,7 @@ description: >-
   and WeChat 贴图号 at 3:4: topic verification, template and visual style
   selection, page-by-page images via the environment's native image tool, HTML/SVG
   rendering, or a user-configured image API, optional reusable characters, and
-  publish copy with QA. Use when the user wants a 小红书/贴图 post or carousel, only
+  publish copy (title, body, tags, first comment) with QA. Use when the user wants a 小红书/贴图 post or carousel, only
   a plan, only the title and body copy, to edit or regenerate one page, to set up
   their account profile, or to build a reusable account character.
 license: MIT
@@ -15,7 +15,7 @@ compatibility: >-
   Optional: ffmpeg (video), tesseract with chi_sim (OCR), an OpenAI-compatible
   image or transcription API configured in .env.
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
   repository: "https://github.com/chans-gh/Image-Passage-IP"
   language: "zh-CN"
 title: "图文策划与出图"
@@ -28,7 +28,9 @@ read_when:
 
 # Image Passage：图文策划与出图
 
-把一句话、一段经历或一堆素材，做成一套可以直接发布的 3:4 图文：**策划 → 逐页出图 → 标题正文标签 → 质检 → 如实交付**。
+把一句话、一段经历或一堆素材，做成一套可以直接发布的 3:4 图文：**策划 → 逐页出图 → 标题正文标签与首条评论 → 质检 → 如实交付**。
+
+最终交付四项，顺序固定：**标题、正文（末尾附标签）、图片、首条评论**。
 
 本文件是总览。细则在 `references/`，按阶段**需要时再读**，不要一次全部读入。
 
@@ -43,7 +45,7 @@ read_when:
 5. **信息隔离**：生成某一页时，只把这一页的规格单、风格锁和参考图交给出图环节。
 6. **密钥安全**：KEY 只放在用户自己的 `.env`；不要求用户在对话里发 KEY，不打印、不写进任何文件。
 7. **权利与隐私**：截图中的个人信息先遮挡；他人肖像、作品、角色需要授权；不仿制知名 IP。
-8. **平台上限**是外部硬约束；不明确时提醒用户以 App 实际限制为准。
+8. **平台上限**是外部硬约束（当前：标题 20 字、正文 800 字、图片 15 张、标签 8 个，见 `references/platforms/`），不能被配置覆盖。
 
 ## 路径约定
 
@@ -67,7 +69,7 @@ read_when:
 | ⑥ 策划 | 选 T、F、H、V、C；每页 L、E、G/H/S；写 `plan.md`。**完整套图在此等待确认** | `content-templates.md`、`visual-system.md`、`workflow.md` 第五节 | — |
 | ⑦ P1 与风格锁 | 生成封面；确认后写风格锁（13 项参数、描述版、精确版） | `page-generation.md`、`visual-system.md` 第五节 | `palette.py tokens` |
 | ⑧ 逐页生成 | 规格单 → 编译 → 生成 → 质检 → 采用 / 阻塞 | `page-generation.md` 第六节 | `workspace.py page / adopt / block`、`render_page.py`、`call_image_api.py` |
-| ⑨ 发布文案 | 标题、正文、标签、来源、合规 | `copywriting.md` | `check_copy.py` |
+| ⑨ 发布文案 | 标题、正文、标签、首条评论、来源、合规 | `copywriting.md` | `check_copy.py` |
 | ⑩ 复核交付 | 发布前清单；状态一致性；交付报告 | `qa-checklist.md` 第 I 节、`workflow.md` 第七节 | `workspace.py status` |
 | ⑪ 存为默认 | 问一次是否把本次选择存进 profile | `onboarding.md` 第四节 | — |
 
@@ -77,10 +79,10 @@ read_when:
 
 | 用户说 | 从哪开始 | 交付 |
 |---|---|---|
-| 「帮我做一套关于……的图文」 | ⓪ → ⑩ 全流程 | 全部图片＋文案 |
+| 「帮我做一套关于……的图文」 | ⓪ → ⑩ 全流程 | 标题、正文、图片、首条评论 |
 | 「只策划」「先别出图」 | ① → ⑥ | `plan.md` |
-| 「只写标题和正文」 | ① → ⑤ → ⑨ | `copy.md`（标为「文案版本」） |
-| 「做一张……」（单图） | F1：⑥ 策划确认后直接出图 | 1 张图＋文案 |
+| 「只写标题和正文」 | ① → ⑤ → ⑨ | 标题、正文、首条评论（标为「文案版本」） |
+| 「做一张……」（单图） | F1：⑥ 策划确认后直接出图 | 标题、正文、1 张图、首条评论 |
 | 「改第 3 页的……」 | 读 `state.json`，只改 P03 | 新版本 v(N+1) |
 | 「继续」「接着做」 | 读 `state.json`，从未完成的页继续 | 剩余页 |
 | 「看一下 P3 的提示词」 | 打开 `pages/P03/prompt.md` | — |
@@ -128,7 +130,7 @@ image-passage-work/<项目名>/
 | `call_image_api.py` | 调用图片 API（文生图 / 参考图编辑），适配为 3:4；`--dry-run` 预览请求 |
 | `image_tools.py` | `fit` 适配画幅 / `mask` 遮挡隐私 / `sheet` 预览拼图 / `info` |
 | `ocr_check.py` | OCR 核对图上文字与规格单（需要 tesseract＋chi_sim） |
-| `check_copy.py` | 标题、字数档、标签、封面文案、合规词检查；`--count` 统计字数 |
+| `check_copy.py` | 标题、字数档、标签、首条评论、封面文案、合规词检查；`--count` 统计字数 |
 
 脚本不可用时（例如环境不能运行 Python），按 references 的规则手工完成，并在报告里说明哪些检查没有执行。
 
@@ -141,7 +143,7 @@ image-passage-work/<项目名>/
 | `references/inputs.md` | 收到文件、图片、链接、音视频，或多种素材组合 |
 | `references/content-templates.md` | 选 D、R、I、T、F、H，安排页面角色 |
 | `references/visual-system.md` | 选 V、L、C、E；写风格锁；配色字体；素材保真 |
-| `references/copywriting.md` | 写标题、正文、标签；合规 |
+| `references/copywriting.md` | 写标题、正文、标签、首条评论；合规 |
 | `references/page-generation.md` | 出图前；每页的流水线；修改与失败处理 |
 | `references/render-routing.md` | 判断路线；配置 `.env` |
 | `references/prompt-recipes.md` | native / api 路线写提示词 |
@@ -152,4 +154,4 @@ image-passage-work/<项目名>/
 
 ## 交付报告（简版）
 
-完成或中断时按 `workflow.md` 第七节报告：交付了什么（页数、文件位置）、确认与授权情况、质检方式（看图 / 脚本 / 未经视觉检查）、未完成和待补的项、需要用户核实的事（平台上限、事实、素材权利）。最后问一次是否把本次选择存为账号默认。
+完成或中断时按 `workflow.md` 第七节：先按顺序给出标题、正文、图片、首条评论，再报告交付了什么（页数、文件位置）、确认与授权情况、质检方式（看图 / 脚本 / 未经视觉检查）、未完成和待补的项、需要用户核实的事（事实、素材权利）。最后问一次是否把本次选择存为账号默认。

@@ -1,6 +1,6 @@
 # Image Passage
 
-> Agent Skill and WorkBuddy expert that plans and produces 3:4 image-plus-text carousel posts for Xiaohongshu (小红书) and WeChat 贴图号: planning, page-by-page images (native image tool / HTML-SVG rendering / OpenAI-compatible image API), publish copy and QA. Rule files are in Simplified Chinese. MIT licensed.
+> Agent Skill and WorkBuddy expert that plans and produces 3:4 image-plus-text carousel posts for Xiaohongshu (小红书) and WeChat 贴图号: planning, page-by-page images (native image tool / HTML-SVG rendering / OpenAI-compatible image API), title, body, tags, first comment and QA. Rule files are in Simplified Chinese. MIT licensed.
 
 To use the skill, read skills/image-passage/SKILL.md first, then only the references the current stage needs. To maintain the repo, read AGENTS.md.
 
@@ -17,14 +17,14 @@ To use the skill, read skills/image-passage/SKILL.md first, then only the refere
 - [inputs.md](skills/image-passage/references/inputs.md): input forms, audio/video, material roles and credibility, rights and privacy
 - [content-templates.md](skills/image-passage/references/content-templates.md): topic domains D, reader values R, interaction I, templates T01–T23, formats F1–F5, hooks H, page roles
 - [visual-system.md](skills/image-passage/references/visual-system.md): styles V01–V12, layouts L01–L36, covers C, style parameters and style lock, elements E01–E39, colours and fonts, material fidelity
-- [copywriting.md](skills/image-passage/references/copywriting.md): title, body length tiers S0–S4, writing patterns W, voice K, tags, compliance, sources
+- [copywriting.md](skills/image-passage/references/copywriting.md): title, body length tiers S0–S4, writing patterns W, voice K, tags, first comment, compliance, sources, default deliverables
 - [page-generation.md](skills/image-passage/references/page-generation.md): one page one image, composition G/H/S, page spec, per-page pipeline, failure and edits
 - [render-routing.md](skills/image-passage/references/render-routing.md): capability detection, render modes, .env variables
 - [prompt-recipes.md](skills/image-passage/references/prompt-recipes.md): image prompt structure for native/api routes
 - [html-recipes.md](skills/image-passage/references/html-recipes.md): HTML/CSS/SVG layout, classes, rendering and checks
 - [characters.md](skills/image-passage/references/characters.md): optional account character and asset prompt templates
 - [qa-checklist.md](skills/image-passage/references/qa-checklist.md): checks per stage and before publishing
-- [platforms/xiaohongshu.md](skills/image-passage/references/platforms/xiaohongshu.md), [platforms/wechat-tietu.md](skills/image-passage/references/platforms/wechat-tietu.md): platform limits (unverified) and habits
+- [platforms/xiaohongshu.md](skills/image-passage/references/platforms/xiaohongshu.md), [platforms/wechat-tietu.md](skills/image-passage/references/platforms/wechat-tietu.md): platform limits (title 20, body 800, 15 images, 8 tags) and habits
 
 ## Scripts
 
@@ -43,3 +43,5 @@ To use the skill, read skills/image-passage/SKILL.md first, then only the refere
 - [assets/](skills/image-passage/assets/): colors.json, fonts.json, platforms.json, css/base.css
 - [examples/demo/](examples/demo/README.md): 5-page svg-route demo
 - [docs/](docs/00_基础方案.md): design docs and the archived V3.1 source rules
+- [docs/workbuddy-submission.md](docs/workbuddy-submission.md): WorkBuddy listing fields, requirements, packaging and self-test checklist
+- [tools/workbuddy_package.py](tools/workbuddy_package.py): check the WorkBuddy manifest and build the upload zip

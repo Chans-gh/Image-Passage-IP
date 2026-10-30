@@ -1,34 +1,74 @@
 {
   "name": "image-passage",
-  "version": "0.1.0",
-  "description": "Plans and produces image-plus-text posts for Xiaohongshu and WeChat",
-  "author": { "name": "chans-gh" },
+  "version": "0.2.0",
+  "description": "Plans and produces image-text posts for Xiaohongshu and WeChat: title, body, images and first comment",
+  "author": {
+    "name": "chans-gh"
+  },
   "license": "MIT",
   "homepage": "https://github.com/chans-gh/Image-Passage-IP",
-  "agents": ["./agents/image-passage.md"],
-  "skills": ["./skills/image-passage"],
-
+  "keywords": [
+    "xiaohongshu",
+    "wechat",
+    "carousel",
+    "image-text post",
+    "content planning",
+    "小红书",
+    "图文"
+  ],
+  "agents": [
+    "./agents/image-passage.md"
+  ],
+  "skills": [
+    "./skills/image-passage"
+  ],
   "expertType": "agent",
   "agentName": "image-passage",
   "plugin": "image-passage",
-
-  "displayName": { "zh": "图文策划师", "en": "Image Passage" },
-  "profession": { "zh": "图文策划与视觉制作", "en": "Image-Text Post Producer" },
+  "displayName": {
+    "zh": "图文策划师",
+    "en": "Image Passage"
+  },
+  "profession": {
+    "zh": "图文策划与视觉制作",
+    "en": "Image-Text Post Producer"
+  },
   "displayDescription": {
-    "zh": "为小红书与微信贴图号策划整套图文，从选题核实、模板风格选型到逐页出图，配齐标题正文并质检",
-    "en": "Plans complete image-text posts for Xiaohongshu and WeChat: topic verification, template and style selection, page-by-page images, publish copy and QA"
+    "zh": "为小红书和微信贴图号策划整套图文，从选题核实、风格选型到逐页出图，配齐标题、正文与首条评论并质检",
+    "en": "Plans complete image-text posts for Xiaohongshu and WeChat: topic checks, style selection, page-by-page images, title, body and first comment, with QA"
   },
   "avatar": "avatars/expert.png",
   "categoryId": "06-ContentCreative",
-  "defaultInitPrompt": { "zh": "用 SOP 帮我做一套图文", "en": "Make an image-text post with the SOP" },
+  "defaultInitPrompt": {
+    "zh": "帮我做一套小红书图文",
+    "en": "Make a Xiaohongshu image-text post"
+  },
   "quickPrompts": [
-    { "zh": "用 SOP 帮我做一套图文", "en": "Make an image-text post with the SOP" },
-    { "zh": "只策划，先不出图", "en": "Plan only, no images yet" },
-    { "zh": "只写一版发布标题和正文", "en": "Write the post title and body only" }
+    {
+      "zh": "帮我做一套小红书图文",
+      "en": "Make a Xiaohongshu image-text post"
+    },
+    {
+      "zh": "只策划，先不出图",
+      "en": "Plan only, no images yet"
+    },
+    {
+      "zh": "只写标题、正文和首条评论",
+      "en": "Write the title, body and first comment only"
+    }
   ],
   "tags": [
-    { "zh": "图文策划", "en": "Post Planning" },
-    { "zh": "小红书", "en": "Xiaohongshu" },
-    { "zh": "微信贴图", "en": "WeChat Images" }
+    {
+      "zh": "图文策划",
+      "en": "Post Planning"
+    },
+    {
+      "zh": "小红书",
+      "en": "Xiaohongshu"
+    },
+    {
+      "zh": "微信贴图",
+      "en": "WeChat Images"
+    }
   ]
 }

@@ -22,7 +22,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import ASSETS_DIR, TEMPLATES_DIR, die, workdir  # noqa: E402
+from _common import ASSETS_DIR, TEMPLATES_DIR, die, load_json, workdir  # noqa: E402
 
 PAGE_RE = re.compile(r"^P(\d{1,3})$", re.I)
 
@@ -206,6 +206,11 @@ def cmd_status(args: argparse.Namespace) -> None:
                 issues.append(f"{page} 标为完成，但采用版本文件不存在")
             if not (project / "final" / f"{page}.png").is_file():
                 issues.append(f"{page} 标为完成，但 final/{page}.png 不存在")
+    platforms = load_json(ASSETS_DIR / "platforms.json")
+    for key in (["xiaohongshu", "wechat-tietu"] if state.get("platform") == "both" else [state.get("platform")]):
+        limit = platforms.get(key or "", {}).get("max_images")
+        if isinstance(total, int) and limit and total > limit:
+            issues.append(f"共 {total} 页，超过{platforms[key]['name']}图片上限 {limit} 张")
     extra_final = sorted(p.stem for p in (project / "final").glob("P*.png") if p.stem not in expected)
     if extra_final:
         issues.append("final/ 中有策划之外的页：" + ", ".join(extra_final))

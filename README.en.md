@@ -1,10 +1,12 @@
 # Image Passage
 
-[中文](README.md) · MIT License · v0.1.0
+[中文](README.md) · MIT License · v0.2.0
 
 Image Passage plans and produces 3:4 image-plus-text carousel posts for **Xiaohongshu (小红书)** and **WeChat 贴图号**. It turns a sentence, an experience or a pile of material into a full set of post images plus a title, body and tags, ready to publish.
 
 **Plan → page-by-page images → publish copy → QA → honest delivery report**
+
+The final delivery has four parts: **title, body (tags at the end), images, and a first comment**. Default limits: title 20 characters, body 800, up to 15 images and 8 tags.
 
 One rule set, three ways to use it:
 
@@ -25,9 +27,9 @@ The skill's working language is Simplified Chinese, because the target platforms
   - Text-only model → `svg`: the model writes HTML+CSS with inline SVG, and a script renders it with Chromium.
   - An OpenAI-compatible image API is configured in `.env` → `api`.
 - **Each page is built one of three ways.**
-  - **G**: the image is fully generated.
-  - **H**: a generated base with blank zones, with exact text and screenshots overlaid in code.
-  - **S**: pure layout.
+  - **G (Generate)**: the image model draws the whole page. For pages with little text, such as a picture cover.
+  - **H (Hybrid)**: the image model draws a background with blank zones, and code overlays exact text and screenshots.
+  - **S (Static)**: pure HTML+CSS layout, no image model.
   - Text-heavy pages, and pages that must reproduce screenshots faithfully, automatically use H or S. This keeps image models from garbling text.
 - **White box.** Every page gets a spec (`spec.md`) that is compiled into `prompt.md` or `page.html`. Everything is archived. Prompts are hidden from the chat by default but can always be opened and edited.
 - **A structured planning library:**
@@ -37,9 +39,10 @@ The skill's working language is Simplified Chinese, because the target platforms
 - **Optional account profile.** Start right away, or set up an account profile three ways: a quick setup, a full setup, or extracting your style from screenshots of past posts. At the end of each run, the skill asks once whether to save your choices as defaults.
 - **Many input types.** Text, screenshots, photos, documents (pdf / docx / pptx / xlsx / csv / html), links, audio and video. Audio and video use an optional transcription API, and ffmpeg extracts video frames.
 - **Optional account character, off by default.** Upload your own character art, or use the built-in prompt templates to generate a reference sheet, expressions and poses.
+- **First comment.** Each post comes with a first comment the account posts itself: extra details, conditions, or a discussion question. It does not repeat the body and contains no engagement bait or off-platform links.
 - **QA.**
   - The render script checks for overflow, off-page elements, font size, fonts, images, overlap and the number of highlights.
-  - The copy script checks length tier, tags, absolute claims, efficacy or return promises, and engagement bait.
+  - The copy script checks title, length tier, tags, first comment, absolute claims, efficacy or return promises, and engagement bait.
   - Pages that cannot be visually inspected are reported as such.
 - **Open fonts.** 8 OFL Chinese fonts, including Noto Sans SC and LXGW WenKai, are downloaded on demand.
 
@@ -66,7 +69,11 @@ For a single project, link it into that project's `.agents/skills/` instead. `sk
 
 ### WorkBuddy
 
-`.codebuddy-plugin/plugin.json` defines the expert 「图文策划师」. Its identity and opening are in `agents/image-passage.md`, and the skill is in `skills/image-passage/`. Import the repository the way WorkBuddy imports plugins.
+`.codebuddy-plugin/plugin.json` defines the expert 「图文策划师」. Its identity and opening are in `agents/image-passage.md`, and the skill is in `skills/image-passage/`. Fields, requirements and the packaging command are in [docs/workbuddy-submission.md](docs/workbuddy-submission.md) (Chinese):
+
+```bash
+python3 tools/workbuddy_package.py zip
+```
 
 ### Other agents
 
@@ -115,7 +122,7 @@ You only need `.env` for the `api` route and for audio or video transcription. C
 Things you can say to the agent:
 
 - "帮我做一套关于……的图文" runs the full workflow. By default it stops for your approval twice: on the **plan** and on the **P1 cover**.
-- "只策划" (plan only), "只写标题和正文" (copy only), "做一张……" (single image).
+- "只策划" (plan only), "只写标题、正文和首条评论" (copy only), "做一张……" (single image).
 - "改第 3 页的标题" (edit page 3), "继续" (continue), "看一下 P3 的提示词" (show P3's prompt).
 - "设置账号" (set up profile), "做一个账号角色" (build a character).
 
@@ -136,7 +143,7 @@ Work can resume in a new session: the agent reads `state.json` and `plan.md` rat
 .claude-plugin/          Claude Code plugin and marketplace manifests
 .codebuddy-plugin/       WorkBuddy expert manifest
 agents/image-passage.md  Expert identity and opening (WorkBuddy / Claude Code subagent)
-avatars/expert.png       Expert avatar (placeholder)
+avatars/expert.png       Expert avatar
 skills/image-passage/    The skill
 ├── SKILL.md             Overview: principles, stages, routes, scripts, reference index
 ├── agents/openai.yaml   Codex display metadata
@@ -145,20 +152,20 @@ skills/image-passage/    The skill
 ├── scripts/             Python scripts (render, QA, API, input extraction)
 └── assets/              Colour table, font table, platform presets, base.css
 examples/demo/           5-page demo (svg route)
-docs/                    Design docs (Chinese) and the archived V3.1 source rules
+tools/                   Maintenance tools (WorkBuddy manifest check and packaging)
+docs/                    Design docs, WorkBuddy submission sheet (Chinese), archived V3.1 rules
 ```
 
 Maintainer notes for AI agents are in [AGENTS.md](AGENTS.md). A file index is in [llms.txt](llms.txt).
 
 ## Open items
 
-- **Platform limits** (title, body, tags, image count) have not been verified in the apps yet. `assets/platforms.json` marks them as unverified. Check the app before publishing.
-- Native image and vision capabilities in Codex and WorkBuddy still need hands-on testing.
+- Native image and vision capabilities in Codex and WorkBuddy will be added after the author tests them.
 - The thresholds for automatically choosing between G and H (30 characters, 4 points) are initial defaults.
-- The expert avatar is a placeholder.
+- Platform limits (title 20, body 800, 15 images, 8 tags) were set by the author. Update `references/platforms/*.md` if platform rules change.
 
 Issues and PRs are welcome. Please read [AGENTS.md](AGENTS.md) before changing rules.
 
 ## License
 
-[MIT](LICENSE). Downloaded fonts are under the SIL Open Font License. When you publish generated content, follow platform rules and make sure you have the rights to the material, likenesses and characters you use.
+Code and rule files are under [MIT](LICENSE). The expert avatar `avatars/expert.png` is the author's own character and is not covered by the MIT license; do not reuse it without permission. Downloaded fonts are under the SIL Open Font License. When you publish generated content, follow platform rules and make sure you have the rights to the material, likenesses and characters you use.

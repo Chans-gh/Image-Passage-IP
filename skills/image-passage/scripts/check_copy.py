@@ -2,7 +2,7 @@
 """发布文案检查：字数口径、平台上限、标签数、违规用语。
 
     python3 check_copy.py <项目>/copy.md [--platform xiaohongshu] [--tier S3]
-        [--title-max 20] [--commercial] [--domain D10] [--profile image-passage-work/profile.md]
+        [--title-max 20] [--comment-max 150] [--no-comment] [--commercial] [--domain D10] [--profile image-passage-work/profile.md]
     python3 check_copy.py --count "任意一段文字"
 
 字数口径（references/copywriting.md）：可见字符粗计，汉字、字母、数字、标点、表情各计 1，
@@ -30,7 +30,7 @@ ABSOLUTE = ["最好", "最强", "最佳", "最优", "最便宜", "最有效", "�
 EFFICACY = ["治疗", "根治", "治愈", "药到病除", "立竿见影", "包治", "疗效", "消炎", "祛斑", "减肥神器", "七天瘦"]
 FINANCE = ["稳赚", "保本", "必涨", "躺赚", "翻倍", "收益保证", "无风险收益"]
 INDUCE = ["点赞过", "赞过百", "评论扣", "扣1", "扣 1", "关注后私信", "私信领取", "私信领", "求关注", "转发给",
-          "一键三连", "评论区领取", "关注我领", "互粉", "互赞"]
+          "一键三连", "评论区领取", "关注我领", "互粉", "互赞", "加微信", "加我微信", "加V", "加v", "+V", "+v"]
 FIRST_PERSON = ["亲测", "我试过", "我用了", "我坚持", "我靠", "实测", "用了一个月", "真实体验"]
 DISCLAIMER = ["不构成", "仅供参考", "请咨询", "以医生", "以专业", "以兽医", "个体差异"]
 SENSITIVE_DOMAINS = {"D10", "D14", "D15", "D16", "D17", "D20", "D07"}
@@ -99,6 +99,8 @@ def main() -> None:
     parser.add_argument("--tier", choices=list(TIERS))
     parser.add_argument("--title-max", type=int, default=20)
     parser.add_argument("--cover-max", type=int, default=14)
+    parser.add_argument("--comment-max", type=int, default=150, help="首条评论的项目默认上限")
+    parser.add_argument("--no-comment", action="store_true", help="本次不交付首条评论")
     parser.add_argument("--tags-min", type=int, default=3)
     parser.add_argument("--tags-max", type=int, default=6)
     parser.add_argument("--commercial", action="store_true", help="商业合作或推荐内容：绝对化用语记为错误")
@@ -124,6 +126,7 @@ def main() -> None:
     body = sec.get("正文", "")
     tags = re.findall(r"#[^\s#]+", sec.get("标签", ""))
     cover = sec.get("封面主文案", "")
+    comment = sec.get("首条评论", "")
     issues: list[dict] = []
 
     def add(level: str, kind: str, detail: str) -> None:
@@ -154,7 +157,13 @@ def main() -> None:
         if count_chars(first) > args.cover_max:
             add("warning", "cover", f"封面主标题 {count_chars(first)} 字，超过 {args.cover_max} 字（大字报可放宽到 20）")
 
-    full = "\n".join([title, body, cover])
+    n_comment = count_chars(comment)
+    if not comment and not args.no_comment:
+        add("warning", "comment", "缺少首条评论（不需要时加 --no-comment）")
+    elif n_comment > args.comment_max:
+        add("warning", "comment", f"首条评论 {n_comment} 字，超过项目默认 {args.comment_max} 字")
+
+    full = "\n".join([title, body, cover, comment])
     hits = find(full, ABSOLUTE)
     if hits:
         add("error" if commercial else "warning", "absolute", "绝对化用语：" + "、".join(hits))
@@ -179,7 +188,7 @@ def main() -> None:
         add("info", "platform", f"{limits.get('name', platform)}的上限尚未核实，发布前以 App 实际限制为准")
 
     report = {"file": str(args.copy), "platform": platform, "tier": tier,
-              "counts": {"title": n_title, "body": n_body, "tags": len(tags)},
+              "counts": {"title": n_title, "body": n_body, "tags": len(tags), "comment": n_comment},
               "issues": issues,
               "errors": sum(i["level"] == "error" for i in issues),
               "warnings": sum(i["level"] == "warning" for i in issues)}
