@@ -78,23 +78,7 @@ If pip refuses with `externally-managed-environment`, do not pass `--break-syste
 - a virtual environment (`python3 -m venv ~/.local/share/image-passage/.venv`, install there, and activate it before starting the agent), or
 - `--break-system-packages` with `--user`.
 
-Then install the browser used for HTML rendering:
-
-```bash
-python3 -m playwright install chromium
-```
-
-On Linux, if Chromium fails to launch because of missing system libraries, run `python3 -m playwright install-deps chromium` (needs sudo; ask first).
-
-## 4. Fonts
-
-Downloads the default OFL Chinese fonts to `~/.cache/image-passage/fonts` (override with `IMAGE_PASSAGE_FONT_DIR`):
-
-```bash
-python3 "$HOME/.local/share/image-passage/skills/image-passage/scripts/fetch_fonts.py"
-```
-
-## 5. Optional tools
+## 4. Optional tools
 
 Install only if the user wants these features; ask before using a package manager.
 
@@ -103,7 +87,7 @@ Install only if the user wants these features; ask before using a package manage
 | `ffmpeg` | Video frames and audio extraction from video input |
 | `tesseract` with the `chi_sim` language pack | OCR check of text on generated images |
 
-## 6. Optional `.env` (image API, transcription)
+## 5. Optional `.env` (image API, transcription)
 
 Only needed for the `api` render route or audio/video transcription. Copy the template into the directory where the user runs the agent:
 
@@ -113,28 +97,20 @@ cp "$HOME/.local/share/image-passage/.env.example" ./.env
 
 Tell the user to fill in `IMAGE_API_BASE_URL`, `IMAGE_API_KEY`, `IMAGE_API_MODEL` (OpenAI-compatible `/images/generations` and `/images/edits`) themselves. **Never ask the user to paste a key into the chat, never print a key, never write one into any file yourself.**
 
-## 7. Verify
+## 6. Verify
 
 ```bash
 python3 "$HOME/.local/share/image-passage/skills/image-passage/scripts/env_check.py"
 ```
 
-It reports Chromium, Pillow, ffmpeg, tesseract, fonts and `.env`, and recommends a render route. Output is in Chinese. A working install shows `Chromium：可用` and at least one font on the `字体：` line. Optionally render the demo:
+It reports Pillow, ffmpeg, tesseract, the reference-image support and `.env`, then recommends a render route (`native` or `api`) and a QA tier. Output is in Chinese. A working install shows a recommended route and lists anything missing.
 
-```bash
-cd "$HOME/.local/share/image-passage"
-cp skills/image-passage/assets/css/base.css examples/demo/render/
-python3 skills/image-passage/scripts/render_page.py examples/demo/pages/P0*/page.html --out-dir /tmp/image-passage-demo
-```
-
-Expect 5 PNGs at 1242×1656 and `0` errors.
-
-## 8. Report to the user
+## 7. Report to the user
 
 Tell the user, in Chinese:
 
 1. Where it is installed and for which agent.
-2. The `env_check.py` result: recommended route (native / svg / api) and anything missing.
+2. The `env_check.py` result: recommended route (native / api) and anything missing.
 3. How to start: open a new session and say 「帮我做一套小红书图文」, 「只策划，先不出图」 or 「只写标题、正文和首条评论」.
 4. That work files will be written to `./image-passage-work/` in the directory where they run the agent.
 
@@ -144,8 +120,8 @@ Tell the user, in Chinese:
 git -C "$HOME/.local/share/image-passage" pull --ff-only
 ```
 
-To uninstall, remove the symlink you created in step 2 and the clone. Fonts are cached in `~/.cache/image-passage/`.
+To uninstall, remove the symlink you created in step 2 and the clone.
 
 ```bash
-rm "$HOME/.claude/skills/image-passage" "$HOME/.agents/skills/image-passage" 2>/dev/null; rm -rf "$HOME/.local/share/image-passage" "$HOME/.cache/image-passage"
+rm "$HOME/.claude/skills/image-passage" "$HOME/.agents/skills/image-passage" 2>/dev/null; rm -rf "$HOME/.local/share/image-passage"
 ```

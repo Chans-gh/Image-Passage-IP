@@ -2,6 +2,32 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [0.3.0] - 2026-11-14
+
+### 变更（破坏性）
+
+- 出图路线精简为两条：`native`（环境自带生图能力）与 `api`（OpenAI 兼容图片接口）。`svg` 路线及其依赖（Playwright／Chromium、系统字体、字体下载）全部移除；两条路线都不具备时为 `none`，只交付策划与文案并说明怎样才能出图。
+- 每页只有一种构成方式：**整图生成**——一页的画面与全部文字由生图模型一次性生成。删除 `H`（底图＋HTML 叠加文字）与 `S`（纯 HTML/SVG 排版）。
+- 新增能力项 `reference_support`（yes / no / unknown）：生图工具能否接收参考图。需要保真的截图和照片以参考图方式原样传入、不重绘；为 `no` 时含素材的页不能出图。
+- `qa_mode` 改为 `visual` / `script+ocr` / `unchecked`；原 `script-only` 并入 `unchecked`（不再有渲染脚本可跑）。
+
+### 移除
+
+- 文件：`assets/css/base.css`、`assets/fonts.json`、`scripts/render_page.py`、`scripts/fetch_fonts.py`、`references/html-recipes.md`、`templates/page.html`、`templates/page-compose.html`、`templates/tokens.css`、`examples/demo/`。
+- 依赖：`playwright`（`requirements.txt`）；`.env` 的 `IMAGE_PASSAGE_FONT_DIR`。
+- 规则：`visual-system.md` 的「风格 × 渲染路线」「版式 × 渲染路线」两张适配表、L 表的 CSS 类列、E 表的实现列；`prompt-recipes.md` 的「H 页的底图提示词」整节。
+- `palette.py` 的 `tokens` 子命令与字体／字号参数；`env_check.py` 的 Chromium 与字体检查。
+
+### 变更
+
+- 保真素材的打码时机明确为「交给生图模型之前」。
+- 字体改为只写「字体感」，不再指定字体文件，避免要求复现商用字体字形。
+- `examples/demo/copy.md` 改为 `examples/copy-sample.md`，只作 `check_copy.py` 的基线。
+
+### 说明
+
+- **未新增任何字数上限**。单页文字量仍只按 `visual-system.md` 第三节的 L 口径作参考，信息表达优先于迁就模型。
+
 ## [0.2.0] - 2026-10-30
 
 ### 新增

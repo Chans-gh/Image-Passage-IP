@@ -1,6 +1,6 @@
 {
   "name": "image-passage",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Plans and produces image-text posts for Xiaohongshu and WeChat: title, body, images and first comment",
   "author": {
     "name": "chans-gh"
