@@ -5,6 +5,7 @@
         把任意尺寸的图适配为 3:4 输出规格（默认 1242×1656）。cover 居中裁切，contain 留边。
     python3 image_tools.py mask in.png out.png --rect x,y,w,h [--rect ...] [--style blur|fill]
         遮挡隐私信息（手机号、姓名、订单号、头像等）。坐标为像素，也可写百分比如 10%,20%,30%,5%。
+        素材要在作为参考图交给模型之前完成遮挡，避免隐私信息进入提示词或接口请求。
     python3 image_tools.py sheet out.jpg a.png b.png ... [--cols 3] [--label]
         拼一张预览图（只用于内部查看或用户明确要求的整套预览，不能当作正式页面）。
     python3 image_tools.py info a.png b.png ...

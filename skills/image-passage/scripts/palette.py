@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
-"""颜色名 → HEX，并生成项目的 tokens.css（风格锁的精确版）。
+"""颜色名 → HEX（风格锁的精确版）。
 
     python3 palette.py resolve 鼠尾草绿 暖米白 炭灰
     python3 palette.py list
-    python3 palette.py tokens --out <项目>/render/tokens.css \
-        --bg 暖米白 --surface 纯白 --text 炭灰 --muted 冷灰 --line 炭灰 \
-        --primary 鼠尾草绿 --accent 珊瑚橙 --highlight 奶油黄 \
-        --font-title noto-sans-sc --font-body noto-sans-sc --font-hand lxgw-wenkai \
-        [--radius 24] [--stroke 3] [--margin 64] [--fs-cover 132 --fs-title 80 --fs-body 42]
 
 颜色参数可以写颜色名，也可以直接写 #RRGGBB。表里没有的颜色名会报错：
 请由模型推导一个 HEX 直接传入，并把「颜色名 = HEX」写进 style-lock.md。只依赖标准库。
@@ -43,10 +38,6 @@ def resolve(name: str) -> str | None:
     return None
 
 
-def fonts_by_id() -> dict[str, dict]:
-    return {f["id"]: f for f in load_json(ASSETS_DIR / "fonts.json")["fonts"]}
-
-
 def cmd_resolve(a: argparse.Namespace) -> None:
     missing = []
     for name in a.names:
@@ -66,68 +57,11 @@ def cmd_list(_: argparse.Namespace) -> None:
     print("【别名】 " + "  ".join(f"{a}→{b}" for a, b in data.get("aliases", {}).items()))
 
 
-def cmd_tokens(a: argparse.Namespace) -> None:
-    colors = {}
-    for key in ["bg", "surface", "text", "muted", "line", "primary", "accent", "highlight", "good", "bad"]:
-        value = getattr(a, key)
-        if value is None:
-            continue
-        hexv = resolve(value)
-        if not hexv:
-            print(f"错误：颜色「{value}」不在参考表中，请直接传入 HEX（例如 --{key} '#9CAF88'）", file=sys.stderr)
-            sys.exit(1)
-        colors[key] = (value, hexv)
-    fonts = fonts_by_id()
-    font_vars = {}
-    for key in ["title", "body", "hand", "serif"]:
-        fid = getattr(a, f"font_{key}")
-        if fid is None:
-            continue
-        if fid not in fonts:
-            print(f"错误：未知字体 id「{fid}」，可选：{', '.join(fonts)}", file=sys.stderr)
-            sys.exit(1)
-        font_vars[key] = fonts[fid]
-
-    lines = ["/* 由 palette.py 生成：风格锁的精确版。同一套图内不要逐页修改。 */", ":root {"]
-    var_names = {"bg": "--c-bg", "surface": "--c-surface", "text": "--c-text", "muted": "--c-muted",
-                 "line": "--c-line", "primary": "--c-primary", "accent": "--c-accent",
-                 "highlight": "--c-highlight", "good": "--c-good", "bad": "--c-bad"}
-    for key, (name, hexv) in colors.items():
-        lines.append(f"  {var_names[key]}: {hexv}; /* {name} */")
-    for key, font in font_vars.items():
-        stack = [f'"{font["family"]}"'] + [f for f in ['"Noto Sans SC"', '"WenQuanYi Zen Hei"'] if f.strip('"') != font["family"]]
-        generic = "serif" if key == "serif" else "sans-serif"
-        lines.append(f'  --f-{key}: {", ".join(stack)}, {generic}; /* {font["zh"]} */')
-    for key in ["radius", "stroke", "margin", "fs_cover", "fs_title", "fs_sub", "fs_body", "fs_note"]:
-        value = getattr(a, key)
-        if value is not None:
-            lines.append(f"  --{key.replace('_', '-')}: {value:g}px;")
-    if a.fw_title:
-        lines.append(f"  --fw-title: {a.fw_title};")
-    lines.append("}")
-    text = "\n".join(lines) + "\n"
-    if a.out:
-        a.out.parent.mkdir(parents=True, exist_ok=True)
-        a.out.write_text(text, encoding="utf-8")
-        print(f"已写入 {a.out}")
-    else:
-        print(text, end="")
-
-
 def main() -> None:
-    parser = argparse.ArgumentParser(description="颜色名 → HEX，生成 tokens.css")
+    parser = argparse.ArgumentParser(description="颜色名 → HEX")
     sub = parser.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("resolve"); p.add_argument("names", nargs="+"); p.set_defaults(func=cmd_resolve)
     p = sub.add_parser("list"); p.set_defaults(func=cmd_list)
-    p = sub.add_parser("tokens"); p.add_argument("--out", type=Path)
-    for key in ["bg", "surface", "text", "muted", "line", "primary", "accent", "highlight", "good", "bad"]:
-        p.add_argument(f"--{key}")
-    for key in ["title", "body", "hand", "serif"]:
-        p.add_argument(f"--font-{key}")
-    for key in ["radius", "stroke", "margin", "fs-cover", "fs-title", "fs-sub", "fs-body", "fs-note"]:
-        p.add_argument(f"--{key}", type=float)
-    p.add_argument("--fw-title", type=int)
-    p.set_defaults(func=cmd_tokens)
     args = parser.parse_args()
     args.func(args)
 

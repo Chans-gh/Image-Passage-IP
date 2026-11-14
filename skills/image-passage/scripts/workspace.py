@@ -3,7 +3,7 @@
 
     python3 workspace.py init                     # 建立 image-passage-work/ 和 profile.md
     python3 workspace.py new <项目名> [--platform xiaohongshu|wechat-tietu|both]
-    python3 workspace.py page <项目名> P03 [--composition G|H|S]
+    python3 workspace.py page <项目名> P03
     python3 workspace.py adopt <项目名> P03 v2     # 记录采用版本并复制到 final/
     python3 workspace.py block <项目名> P03 "原因"  # 记为待处理
     python3 workspace.py status <项目名>           # 进度与一致性检查
@@ -94,7 +94,7 @@ def cmd_new(args: argparse.Namespace) -> None:
     project = wd / name
     if project.exists() and not args.force:
         die(f"项目已存在：{project}（继续已有项目请用 status）")
-    for sub in ["inputs", "pages", "final", "render"]:
+    for sub in ["inputs", "pages", "final"]:
         (project / sub).mkdir(parents=True, exist_ok=True)
     values = dict(PROJECT=name, DATE=now()[:10], PLATFORM=args.platform)
     for tpl in ["plan.md", "inputs.md", "copy.md", "style-lock.md"]:
@@ -104,10 +104,6 @@ def cmd_new(args: argparse.Namespace) -> None:
     state = json.loads(fill((TEMPLATES_DIR / "state.json").read_text(encoding="utf-8"), **values))
     state["created"] = now()
     write_state(project, state, "项目创建")
-    shutil.copy(ASSETS_DIR / "css" / "base.css", project / "render" / "base.css")
-    tokens = project / "render" / "tokens.css"
-    if not tokens.exists():
-        shutil.copy(TEMPLATES_DIR / "tokens.css", tokens)
     print(f"已创建项目：{project}")
 
 
@@ -121,20 +117,13 @@ def cmd_page(args: argparse.Namespace) -> None:
     spec = pdir / "spec.md"
     if not spec.exists():
         spec.write_text(fill((TEMPLATES_DIR / "spec.md").read_text(encoding="utf-8"),
-                             PAGE=page, NUM=str(int(page[1:])), TOTAL=str(total),
-                             COMPOSITION=args.composition), encoding="utf-8")
-    if args.composition in ("H", "S") and not (pdir / "page.html").exists():
-        tpl = "page-compose.html" if args.composition == "H" else "page.html"
-        (pdir / "page.html").write_text(fill((TEMPLATES_DIR / tpl).read_text(encoding="utf-8"),
-                                             PAGE=page, NUM=str(int(page[1:])), TOTAL=str(total)),
-                                        encoding="utf-8")
+                             PAGE=page, NUM=str(int(page[1:])), TOTAL=str(total)), encoding="utf-8")
     entry = state.setdefault("pages", {}).setdefault(page, {})
     entry.setdefault("status", "todo")
     entry.setdefault("versions", [])
     entry.setdefault("adopted", None)
     entry.setdefault("attempts", 0)
-    entry["composition"] = args.composition
-    write_state(project, state, f"{page} 建立规格单（{args.composition}）")
+    write_state(project, state, f"{page} 建立规格单")
     print(f"已准备：{pdir}")
 
 
@@ -198,7 +187,7 @@ def cmd_status(args: argparse.Namespace) -> None:
         status = entry.get("status", "todo")
         adopted = entry.get("adopted")
         extra = f"  原因：{entry['blocked_reason']}" if status == "blocked" else ""
-        print(f"  {page}  {status:<8} {entry.get('composition', '?')}  采用：{adopted or '-'}"
+        print(f"  {page}  {status:<8} 采用：{adopted or '-'}"
               f"  版本：{','.join(entry.get('versions', [])) or '-'}{extra}")
         counts["done" if status == "done" else "blocked" if status == "blocked" else "todo"] += 1
         if status == "done":
@@ -245,7 +234,7 @@ def main() -> None:
     p.add_argument("--platform", default="xiaohongshu", choices=["xiaohongshu", "wechat-tietu", "both"])
     p.add_argument("--force", action="store_true"); p.set_defaults(func=cmd_new)
     p = sub.add_parser("page"); p.add_argument("name"); p.add_argument("page")
-    p.add_argument("--composition", default="G", choices=["G", "H", "S"]); p.set_defaults(func=cmd_page)
+    p.set_defaults(func=cmd_page)
     p = sub.add_parser("adopt"); p.add_argument("name"); p.add_argument("page"); p.add_argument("version")
     p.add_argument("--qa", default="pass", choices=["pass", "pass-script-only", "unchecked"])
     p.set_defaults(func=cmd_adopt)
