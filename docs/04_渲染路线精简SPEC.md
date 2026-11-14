@@ -260,7 +260,7 @@
 | `templates/style-lock.md` | 第 5 行删除「写进 render/tokens.css」；第 2 项改为 `native / api`；「精确版」标题改为「精确版（HEX，供提示词与风格锁使用）」，删除「写进 tokens.css」；「生图参数」一节的字段按路线填 |
 | `templates/state.json` | `config` 新增 `pagenum` 取值说明（`B` / `off`）；`pages.PNN` 不再写 `composition`；`render` 保留 `tool / model / size / quality / seed`，新增 `reference_support` |
 | `templates/prompt.md` | 第 5 层注释补「原样嵌入」；第 7 层禁止项补「错字、别字、乱码、多余文字」；**不新增字数提示** |
-| `templates/copy.md` | **不改** |
+| `templates/copy.md` | 本轮不改；后续「文字前置」改动补了产出时机与检查命令的注释（见 `docs/05_文字前置与确认SPEC.md`） |
 | `templates/profile.md` | G 组「每页最多重试：2」保留；F 组保留；新增一行可选「生图工具是否支持参考图」 |
 | `templates/character.md` | 第 15 行「svg 时补 HEX」→「按需补 HEX」 |
 | `templates/inputs.md` | **不改** |
@@ -339,7 +339,7 @@
 | 颜色名（`visual-system.md` §七） | `assets/colors.json`、`scripts/palette.py` |
 | 长度档 S0–S4、合规词表（`copywriting.md` §五、§九） | `scripts/check_copy.py` |
 | 平台上限（`platforms/*.md`） | `assets/platforms.json`、`check_copy.py`、`workspace.py status`、SKILL.md 原则 8、两个 README |
-| 最终交付四项与首条评论（`copywriting.md` §十二、§十四） | `templates/copy.md`、`check_copy.py`、`workflow.md` §七 |
+| 最终交付四项与首条评论（`copywriting.md` §十二、§十四） | `templates/copy.md`、`check_copy.py`、`workflow.md` §四 ⑥（文案随策划产出）、§七 |
 | 渲染路线与参考图门槛（`render-routing.md`） | `.env.example`、`scripts/env_check.py`、`scripts/call_image_api.py` |
 | 项目文件与状态（`page-generation.md` §十） | `scripts/workspace.py`、`templates/state.json` |
 | profile 字段 A–H（`onboarding.md` §三） | `templates/profile.md` |

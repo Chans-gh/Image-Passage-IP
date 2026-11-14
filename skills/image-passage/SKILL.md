@@ -66,22 +66,22 @@ read_when:
 | ③ 出图能力 | 判断能不能生图、能不能看图、能不能接收参考图，确定路线和质检方式 | `render-routing.md` | `env_check.py --can-generate … --can-see … --reference-support …` |
 | ④ 范围判断 | 完整套图 / 只策划 / 只文案 / 单页 / 修改 | `workflow.md` 第三节 | — |
 | ⑤ 价值与核实 | 场景、问题、核心观点；R、I；核实事实；横切属性 | `content-templates.md` 第一、二节 | — |
-| ⑥ 策划 | 选 T、F、H、V、C；每页 L、E；写 `plan.md`。**完整套图在此等待确认** | `content-templates.md`、`visual-system.md`、`workflow.md` 第五节 | — |
+| ⑥ 策划与文字 | 选 T、F、H、V、C；每页 L、E；写 `plan.md` 与 `copy.md`（标题、正文、标签、首条评论）。**完整套图在此等待确认** | `content-templates.md`、`visual-system.md`、`workflow.md` 第五节 | `check_copy.py` |
 | ⑦ P1 与风格锁 | 生成封面；确认后写风格锁（13 项参数、描述版、精确版） | `page-generation.md`、`visual-system.md` 第五节 | `palette.py resolve` |
-| ⑧ 逐页生成 | 规格单 → 编译 → 生成 → 质检 → 采用 / 阻塞 | `page-generation.md` 第六节 | `workspace.py page / adopt / block`、`call_image_api.py` |
-| ⑨ 发布文案 | 标题、正文、标签、首条评论、来源、合规 | `copywriting.md` | `check_copy.py` |
+| ⑧ 逐页生成 | 规格单 → 编译 → 生成 → 质检 → 采用 / 阻塞 | `page-generation.md` 第六节 | `workspace.py page / adopt / block`、`call_image_api.py`、`check_copy.py --spec-dir` |
+| ⑨ 文案复核 | 按已采用的图核对文案；无矛盾则同步 | `copywriting.md` | `check_copy.py` |
 | ⑩ 复核交付 | 发布前清单；状态一致性；交付报告 | `qa-checklist.md` 第 I 节、`workflow.md` 第七节 | `workspace.py status` |
 | ⑪ 存为默认 | 问一次是否把本次选择存进 profile | `onboarding.md` 第四节 | — |
 
-**默认的两个确认节点**（完整套图）：确认策划、确认 P1。F1 单图只确认策划。用户说「直接出」「不用确认」时按授权执行，并在报告里写「授权采用」。
+**默认的两个确认节点**（完整套图）：确认策划与全部文字、确认 P1。F1 单图只确认策划。用户说「直接出」「不用确认」时按授权执行，并在报告里写「授权采用」。
 
 ## 按任务的快速路径
 
 | 用户说 | 从哪开始 | 交付 |
 |---|---|---|
 | 「帮我做一套关于……的图文」 | ⓪ → ⑩ 全流程 | 标题、正文、图片、首条评论 |
-| 「只策划」「先别出图」 | ① → ⑥ | `plan.md` |
-| 「只写标题和正文」 | ① → ⑤ → ⑨ | 标题、正文、首条评论（标为「文案版本」） |
+| 「只策划」「先别出图」 | ① → ⑥ | `plan.md`（不写 `copy.md`） |
+| 「只写标题和正文」 | ① → ⑤ → ⑥ | 标题、正文、首条评论（标为「文案版本」） |
 | 「做一张……」（单图） | F1：⑥ 策划确认后直接出图 | 标题、正文、1 张图、首条评论 |
 | 「改第 3 页的……」 | 读 `state.json`，只改 P03 | 新版本 v(N+1) |
 | 「继续」「接着做」 | 读 `state.json`，从未完成的页继续 | 剩余页 |
@@ -107,7 +107,7 @@ image-passage-work/<项目名>/
 ├── state.json         机器可读状态：配置、渲染、锚点、授权、每页进度
 ├── pages/PNN/         spec.md、prompt.md、vN.png、qa.md
 ├── final/             采用版本 P01.png … PNN.png
-└── copy.md            发布文案
+└── copy.md            发布文案（第六阶段成稿，出图后同步）
 ```
 
 继续或修改项目时，**先读 `state.json` 和 `plan.md`**，不依赖对话记忆。
@@ -125,7 +125,7 @@ image-passage-work/<项目名>/
 | `call_image_api.py` | 调用图片 API（文生图 / 参考图编辑），适配为 3:4；`--dry-run` 预览请求 |
 | `image_tools.py` | `fit` 适配画幅 / `mask` 遮挡隐私 / `sheet` 预览拼图 / `info` |
 | `ocr_check.py` | OCR 核对图上文字与规格单（需要 tesseract＋chi_sim） |
-| `check_copy.py` | 标题、字数档、标签、首条评论、封面文案、合规词检查；`--count` 统计字数 |
+| `check_copy.py` | 发布文案检查（标题、字数档、标签、首条评论、封面文案、合规词）；`--plan` / `--spec-dir` 检查逐页图上文字；`--count` 统计字数 |
 
 脚本不可用时（例如环境不能运行 Python），按 references 的规则手工完成，并在报告里说明哪些检查没有执行。
 

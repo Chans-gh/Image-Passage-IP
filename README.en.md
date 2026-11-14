@@ -4,7 +4,7 @@
 
 Image Passage plans and produces 3:4 image-plus-text carousel posts for **Xiaohongshu (小红书)** and **WeChat 贴图号**. It turns a sentence, an experience or a pile of material into a full set of post images plus a title, body and tags, ready to publish.
 
-**Plan → page-by-page images → publish copy → QA → honest delivery report**
+**Plan and copy → page-by-page images → copy re-check → QA → honest delivery report**
 
 The final delivery has four parts: **title, body (tags at the end), images, and a first comment**. Default limits: title 20 characters, body 800, up to 15 images and 8 tags.
 
@@ -33,7 +33,7 @@ The skill's working language is Simplified Chinese, because the target platforms
 - **First comment.** Each post comes with a first comment the account posts itself: extra details, conditions, or a discussion question. It does not repeat the body and contains no engagement bait or off-platform links.
 - **QA.**
   - Two tiers are available: a character-by-character visual check of the images, and an OCR spot check.
-  - The copy script checks title, length tier, tags, first comment, absolute claims, efficacy or return promises, and engagement bait.
+  - The copy script checks title, length tier, tags, first comment, absolute claims, efficacy or return promises, and engagement bait. It also checks the on-image text of every page for empty quotes, placeholder words and the same prohibited wording.
   - Pages that cannot be visually inspected are reported as such.
 
 ## Install

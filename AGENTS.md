@@ -27,7 +27,7 @@ Working language for users is Simplified Chinese. Work files go to `./image-pass
 | `.codebuddy-plugin/plugin.json` | WorkBuddy expert manifest. |
 | `examples/copy-sample.md` | Copy baseline for `check_copy.py`. |
 | `INSTALL.md` | Step-by-step install guide written for AI agents. Keep commands in sync with README and the scripts. |
-| `docs/` | Design docs (00–04) and `source-v3.1/`, the read-only archive of the original rules. Not loaded at runtime. |
+| `docs/` | Design docs (00–05) and `source-v3.1/`, the read-only archive of the original rules. Not loaded at runtime. |
 
 ## Where each rule is defined
 
@@ -40,7 +40,8 @@ Some rules are mirrored in code or data. Change both sides together:
 | Colour names (`visual-system.md` §七) | `assets/colors.json`; `scripts/palette.py` |
 | Length tiers S0–S4, compliance word lists (`copywriting.md` §五, §九) | `scripts/check_copy.py` (`TIERS`, `ABSOLUTE`, `EFFICACY`, `FINANCE`, `INDUCE`) |
 | Platform limits (`references/platforms/*.md`) | `assets/platforms.json`; `scripts/check_copy.py` (title, body, tags); `scripts/workspace.py status` (image count); the limits line in SKILL.md principle 8 and the READMEs |
-| Final deliverables and first comment (`copywriting.md` §十二, §十四) | `templates/copy.md`; `scripts/check_copy.py` (`首条评论` section); `workflow.md` §七 report format |
+| Final deliverables, first comment, and when the copy is written (`copywriting.md` §十二, §十四) | `templates/copy.md`; `scripts/check_copy.py` (`首条评论` section); `workflow.md` §四 ⑥ (copy written and confirmed with the plan) and §七 report format |
+| Per-page on-image text (`page-generation.md` §四) | `templates/spec.md`; the 逐页策划 section of `templates/plan.md`; `scripts/check_copy.py --plan` / `--spec-dir` |
 | Render modes, reference support, `.env` variables (`render-routing.md` §二, §四) | `.env.example`; `scripts/env_check.py`; `scripts/call_image_api.py` |
 | Project files and state (`page-generation.md` §十, `SKILL.md`) | `scripts/workspace.py`; `templates/state.json` |
 | Profile fields A–H (`onboarding.md` §三) | `templates/profile.md` |
@@ -56,7 +57,7 @@ Some rules are mirrored in code or data. Change both sides together:
 - **No third-party IP.** Do not add named characters, brand logos or imitations of known IP to examples, prompts or assets. Character support stays generic and opt-in (`characters.md`).
 - **Honest status.** Rules and scripts must never report unchecked work as checked. Keep the `unchecked` / `pass-script-only` QA states.
 - **Platform limits** were set by the author on 2026-10-30 (title 20, body 800, 15 images, 8 tags, both platforms). Change them only on the author's instruction or a confirmed platform change: update `platforms.json` (`verified_on`), the platform md files, and add a CHANGELOG entry.
-- **Final delivery is four parts in a fixed order**: title, body (tags at the end), images, first comment. Keep that order in rules, templates and reports.
+- **Final delivery is four parts in a fixed order**: title, body (tags at the end), images, first comment. The copy is finalized and confirmed together with the plan at stage ⑥; stage ⑨ only re-checks it against the finished images. Keep that order in rules, templates and reports.
 - **The avatar is the author's own image** and is excluded from the MIT license (see LICENSE). Do not replace, edit or reuse it without the author's instruction.
 - **Version** lives in `.claude-plugin/plugin.json`, `.codebuddy-plugin/plugin.json` and the SKILL.md `metadata.version`. Bump them together, update the version in the README badges line, and add a CHANGELOG entry.
 - **WorkBuddy listing material** (submission forms, packaging zips, author contact) is kept outside this repository. Do not add it back.
@@ -88,10 +89,12 @@ python3 skills/image-passage/scripts/env_check.py --can-generate no  --can-see n
 python3 skills/image-passage/scripts/env_check.py --quick
 ```
 
-Check copy rules against the baseline sample:
+Check copy rules against the baseline sample. For a project, stage ⑥ checks the on-image text through `plan.md` and stage ⑧ onwards through the per-page `spec.md` files:
 
 ```bash
 python3 skills/image-passage/scripts/check_copy.py examples/copy-sample.md
+python3 skills/image-passage/scripts/check_copy.py --plan <project>/plan.md
+python3 skills/image-passage/scripts/check_copy.py --spec-dir <project>/pages
 ```
 
 Evoke the reference-image path without sending anything:
