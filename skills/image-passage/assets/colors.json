@@ -1,6 +1,6 @@
 {
  "version": 1,
- "note": "常用颜色名 → HEX 参考表。策划只写颜色名；svg / H 叠字 / api 渲染时用本表推导 HEX 并锁定在 style-lock.md。表里没有的颜色名由模型推导一个 HEX，并写进 style-lock.md，同一套图内不再改。",
+ "note": "常用颜色名 → HEX 参考表。策划、提示词和风格锁只写颜色名；这里与 style-lock.md 的精确版是唯一出现 HEX 的地方。表里没有的颜色名由模型推导一个 HEX，并写进 style-lock.md，同一套图内不再改。",
  "groups": {
   "中性 / 底色": {
    "纸白": "#FAF8F3",
