@@ -1,6 +1,6 @@
 {
   "name": "image-passage",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Plan and produce image-plus-text carousel posts for Xiaohongshu and WeChat 贴图号: planning, page-by-page images (native image tool or external API), title, body, tags, first comment and QA.",
   "author": {
     "name": "chans-gh"

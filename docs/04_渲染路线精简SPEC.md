@@ -166,9 +166,9 @@
    `python3 scripts/image_tools.py mask in.png inputs/in.masked.png --rect x,y,w,h --style blur`
    —— 这一步的时机从「嵌入页面时」提前到「交给模型前」，因为模型会重绘。
 2. **写进规格单**：素材字段写明「原样嵌入，不重绘、不改变关键文字与数值」。
-3. **提示词第 5 层**：写清每张素材的处理方式——
+3. **提示词第 6 层**：写清每张素材的处理方式——
    `参考图 #2 是用户截图：保持其中的文字、数字、按钮状态与界面元素完全不变，只允许缩放与裁切；不要重绘、不要替换文字、不要补全看不清的部分。`
-4. **提示词第 8 层**：按编号说明每张参考图的作用（风格参考 / 原样嵌入 / 角色一致）。
+4. **提示词第 9 层**：按编号说明每张参考图的作用（风格参考 / 原样嵌入 / 角色一致）。
 5. **质检查验**：逐项核对关键文字、数值、状态是否与素材一致；不一致即该页失败。
 
 ### 4.2 与不可覆盖原则的关系
@@ -245,7 +245,7 @@
 | `references/qa-checklist.md` | §质检方式表按 §5.1 改写；E 节「构成方式 G / H / S 按规则选择」→「版式 L 与封面主文案符合 `visual-system.md` §三、§四 的口径」（不引入新阈值）；F 节删除「`tokens.css` 已按精确版生成」；G 节删除「G 页文字不超过阈值；超过时改 H」→ 改为 §3.2 的处理顺序；H 节删除「S / H 页：`render_page.py` 没有错误」→ 改为「文字逐字核对」「素材关键内容保真」；新增「页码反复出错时已按 §3.7 处理/关闭并说明」 |
 | `references/workflow.md` | §一 归属表删除 `html-recipes.md` 行，`page-generation.md` 行去掉「构成方式 G/H/S」，`render-routing.md` 行改为「能力判断、渲染路线、参考图门槛」；§二 项目默认删除「排版底」行、页码行补 `off` 选项（仅在反复写错时使用）；§四 ③ 步骤改写（去掉 Chromium、加 `reference_support`）、⑦ 删除 `palette.py tokens`、⑧ 按新流水线；§五 策划格式「渲染路线与各页构成方式」→「渲染路线」；§六 变更边界「更换渲染模式」保留但去掉 svg 举例，**不新增**「改变文字上限策略需重新确认」 |
 | `references/onboarding.md` | 影响表：C 组「`check_copy.py --profile`」不变；D 组字体倾向行删除「S / H 页使用的字体」；F 组删除「svg 嵌入角色 PNG」；G 组「展示提示词」保留；新增「参考图支持」相关提示（生图工具不支持参考图时，含截图/照片的页无法出图，需提前告知） |
-| `references/characters.md` | §三 删除 `poses/*.png` 的「svg 路线直接嵌入」用途与透明背景要求（改为「可作为参考图，透明背景非必需」）；§五 删除 svg 的 `<img>` 嵌入一条，改为「native / api：参考图 + 第 6 层不可改变项」；§二 人物模式表述不变 |
+| `references/characters.md` | §三 删除 `poses/*.png` 的「svg 路线直接嵌入」用途与透明背景要求（改为「可作为参考图，透明背景非必需」）；§五 删除 svg 的 `<img>` 嵌入一条，改为「native / api：参考图 + 第 7 层不可改变项」；§二 人物模式表述不变 |
 | `references/inputs.md` | §七 打码时机提前：新增一句「素材要在作为参考图交给模型**之前**完成遮挡」；其余不变 |
 | `references/content-templates.md` | **不改**（L34 目录页仍可用；原拟改动取消） |
 | `references/copywriting.md` | **不改**（原拟加重「正文承担」的改动取消；§四 图文分工表原有内容已够用） |
@@ -259,7 +259,7 @@
 | `templates/plan.md` | 第 23 行「渲染路线 · 构成方式」→「渲染路线（native / api）」；第 43、57 行删除「构成方式」 |
 | `templates/style-lock.md` | 第 5 行删除「写进 render/tokens.css」；第 2 项改为 `native / api`；「精确版」标题改为「精确版（HEX，供提示词与风格锁使用）」，删除「写进 tokens.css」；「生图参数」一节的字段按路线填 |
 | `templates/state.json` | `config` 新增 `pagenum` 取值说明（`B` / `off`）；`pages.PNN` 不再写 `composition`；`render` 保留 `tool / model / size / quality / seed`，新增 `reference_support` |
-| `templates/prompt.md` | 第 5 层注释补「原样嵌入」；第 7 层禁止项补「错字、别字、乱码、多余文字」；**不新增字数提示** |
+| `templates/prompt.md` | 第 6 层注释补「原样嵌入」；第 8 层禁止项补「错字、别字、乱码、多余文字」；**不新增字数提示** |
 | `templates/copy.md` | 本轮不改；后续「文字前置」改动补了产出时机与检查命令的注释（见 `docs/05_文字前置与确认SPEC.md`） |
 | `templates/profile.md` | G 组「每页最多重试：2」保留；F 组保留；新增一行可选「生图工具是否支持参考图」 |
 | `templates/character.md` | 第 15 行「svg 时补 HEX」→「按需补 HEX」 |
