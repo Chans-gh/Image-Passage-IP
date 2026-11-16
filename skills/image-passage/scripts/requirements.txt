@@ -1,5 +1,4 @@
-# 渲染（svg 路线、H 底图＋叠加）
-playwright>=1.40
+# 图片处理与适配
 pillow>=10.0
 # 图片 API、语音转写
 requests>=2.28

@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """检查当前环境能做什么，并给出渲染路线建议（references/render-routing.md）。
 
-    python3 env_check.py --can-generate yes|no --can-see yes|no [--json] [--quick]
+    python3 env_check.py --can-generate yes|no --can-see yes|no [--reference-support yes|no|unknown] [--json] [--quick]
 
 --can-generate：当前环境里有没有原生生图工具（由模型根据自己可用的工具判断）
 --can-see：当前模型能不能看图（能否读取图片内容）
-脚本本身检查：Python 依赖、Chromium、ffmpeg、tesseract、字体、.env 配置。
---quick 跳过启动浏览器的测试。不会打印任何 KEY。
+--reference-support：当前生图工具能不能接收参考图（决定含保真素材的页能否出图）
+--quick 跳过需要启动外部进程的检查（tesseract 语言包）
+脚本本身检查：Python 依赖、Pillow、ffmpeg、tesseract、.env 配置。不会打印任何 KEY。
+
+出图只有两条路线：native（环境自带多模态生图）与 api（第三方图片模型接口）。
+两者都不具备时返回 none：先完成策划和文案，说明怎样才能出图。
 """
 from __future__ import annotations
 
@@ -19,29 +23,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import ASSETS_DIR, font_dir, load_env, load_json, mask_secret, workdir  # noqa: E402
+from _common import load_env, mask_secret, workdir  # noqa: E402
 
 
 def has_module(name: str) -> bool:
     return importlib.util.find_spec(name) is not None
-
-
-def chromium_ok() -> tuple[bool, str]:
-    if not has_module("playwright"):
-        return False, "未安装 playwright（pip install playwright && python -m playwright install chromium）"
-    code = ("from playwright.sync_api import sync_playwright\n"
-            "from pathlib import Path\n"
-            "with sync_playwright() as p:\n"
-            "    try:\n        b = p.chromium.launch()\n"
-            "    except Exception:\n        b = p.chromium.launch(executable_path='/opt/pw-browsers/chromium')\n"
-            "    b.close()\n")
-    try:
-        out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=60)
-    except subprocess.TimeoutExpired:
-        return False, "启动 Chromium 超时"
-    if out.returncode == 0:
-        return True, "可用"
-    return False, "Chromium 无法启动：" + (out.stderr.strip().splitlines() or ["未知错误"])[-1][:200]
 
 
 def tesseract_status() -> tuple[bool, str]:
@@ -53,87 +39,78 @@ def tesseract_status() -> tuple[bool, str]:
     return ("chi_sim" in langs), ("可用（含中文）" if "chi_sim" in langs else "已安装，但缺少 chi_sim 中文包")
 
 
-def cjk_system_fonts() -> list[str]:
-    exe = shutil.which("fc-list")
-    if not exe:
-        return []
-    out = subprocess.run([exe, ":lang=zh", "family"], capture_output=True, text=True)
-    return sorted({line.split(",")[0].strip() for line in out.stdout.splitlines() if line.strip()})[:8]
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description="环境能力检查与渲染路线建议")
     parser.add_argument("--can-generate", choices=["yes", "no", "unknown"], default="unknown")
     parser.add_argument("--can-see", choices=["yes", "no", "unknown"], default="unknown")
+    parser.add_argument("--reference-support", choices=["yes", "no", "unknown"], default="unknown")
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--quick", action="store_true")
     args = parser.parse_args()
 
     env, env_path = load_env()
-    fd = font_dir(env)
-    fonts = load_json(ASSETS_DIR / "fonts.json")["fonts"]
-    fonts_have = [f["id"] for f in fonts if (fd / f["file"]).is_file()]
-    browser = (None, "跳过（--quick）") if args.quick else chromium_ok()
-    tess = tesseract_status()
+    tess = (None, "跳过（--quick）") if args.quick else tesseract_status()
     api_ready = bool(env.get("IMAGE_API_BASE_URL") and env.get("IMAGE_API_KEY"))
     asr_ready = bool(env.get("TRANSCRIBE_API_BASE_URL") and env.get("TRANSCRIBE_API_KEY"))
     mode_cfg = (env.get("RENDER_MODE") or "auto").lower()
-    scripts_ok = browser[0] is not False and has_module("PIL")
+    pillow_ok = has_module("PIL")
 
     notes: list[str] = []
     gen = args.can_generate
-    if mode_cfg in ("native", "svg", "api"):
+    if mode_cfg == "svg":
+        notes.append("RENDER_MODE=svg 已停用：出图只支持 native 与 api，请修改 .env 后重试；本次按 auto 判定")
+        mode_cfg = "auto"
+    if mode_cfg in ("native", "api"):
         mode = mode_cfg
         reason = f".env 指定 RENDER_MODE={mode_cfg}"
         if mode == "native" and gen == "no":
-            notes.append("RENDER_MODE=native，但当前环境没有生图工具：请改用 svg 或 api")
-        if mode == "svg" and browser[0] is False:
-            notes.append("RENDER_MODE=svg，但 Chromium 不可用：" + browser[1])
+            notes.append("RENDER_MODE=native，但当前环境没有生图工具：请改用 api")
         if mode == "api" and not api_ready:
             notes.append("RENDER_MODE=api，但 IMAGE_API_BASE_URL / IMAGE_API_KEY 未配置")
     elif gen == "yes":
         mode, reason = "native", "环境有原生生图工具"
-    elif browser[0] is not False and has_module("PIL"):
-        mode, reason = "svg", "没有原生生图工具；可以用 HTML/SVG 排版渲染"
-        if api_ready:
-            notes.append("已配置图片 API：插画、实景类风格可以改用 api（需用户同意，按次计费）")
     elif api_ready:
-        mode, reason = "api", "没有原生生图工具，也无法运行渲染脚本，但已配置图片 API"
+        mode, reason = "api", "没有原生生图工具，但已配置图片 API"
     else:
-        mode, reason = "none", "无法出图：没有生图工具，渲染脚本不可用，也没有配置图片 API"
-        notes.append("可以先完成策划和文案；出图需要安装 playwright，或在 .env 中配置图片 API")
+        mode, reason = "none", "无法出图：既没有生图工具，也没有配置图片 API"
+        notes.append("可以先完成策划和文案；出图需要在 .env 中配置图片 API，或换到有生图工具的环境")
     if gen == "unknown" and mode_cfg == "auto":
         notes.append("未说明是否有原生生图工具，请用 --can-generate 告知后再判断")
 
-    compose_h = mode in ("native", "api") and browser[0] is not False and has_module("PIL")
+    # 参考图：含保真素材（真实截图、照片）的页依赖它
+    ref = args.reference_support
+    if ref == "unknown" and api_ready:
+        ref_mode = (env.get("IMAGE_API_REFERENCE_MODE") or "edits").lower()
+        ref = "no" if ref_mode == "none" else "unknown"
+    if ref == "no" and mode != "none":
+        notes.append("生图工具不支持参考图：含真实截图或照片的页无法出图，请提前告知用户，把素材承载的信息移到正文")
+    elif ref == "unknown" and mode != "none":
+        notes.append("尚未确认生图工具是否支持参考图：先出 1 页含素材的样张验证，再批量")
+
     if args.can_see == "yes":
         qa = "visual"
     elif tess[0]:
         qa = "script+ocr"
     else:
-        qa = "script-only"
+        qa = "unchecked"
     if args.can_see != "yes":
-        notes.append("模型不能看图：用户的照片需要附一句文字说明；无法视觉检查的页面在报告中注明「未经视觉检查」")
-    if not fonts_have:
-        notes.append("尚未下载开源字体：运行 fetch_fonts.py（否则使用系统字体，效果和授权都不可控）")
+        notes.append("模型不能看图：无法逐字核对图上文字。建议先只出 1 页让用户确认，报告里注明「未经视觉检查」")
+    if not pillow_ok:
+        notes.append("未安装 Pillow：image_tools.py（fit / mask / sheet）不可用，画幅适配与打码需要它")
 
     report = {
         "recommended_mode": mode,
         "reason": reason,
-        "compose_H_available": compose_h,
+        "reference_support": ref,
         "qa_mode": qa,
-        "capabilities": {"generate": gen, "see": args.can_see, "scripts": scripts_ok},
+        "capabilities": {"generate": gen, "see": args.can_see},
         "checks": {
             "python": sys.version.split()[0],
-            "playwright_chromium": browser[1],
-            "pillow": has_module("PIL"),
+            "pillow": pillow_ok,
             "requests": has_module("requests"),
             "ffmpeg": bool(shutil.which("ffmpeg")),
             "tesseract": tess[1],
             "doc_libs": {m: has_module(m) for m in ["pdfplumber", "pypdf", "docx", "pptx", "openpyxl"]},
-            "fonts_downloaded": fonts_have,
-            "font_dir": str(fd),
-            "system_cjk_fonts": cjk_system_fonts(),
         },
         "env": {
             "env_file": str(env_path) if env_path else None,
@@ -149,10 +126,9 @@ def main() -> None:
         print(json.dumps(report, ensure_ascii=False, indent=2))
         return
     print(f"建议渲染路线：{mode}（{reason}）")
-    print(f"H 底图＋叠加：{'可用' if compose_h else '不可用'}    质检方式：{qa}")
+    print(f"参考图支持：{ref}    质检方式：{qa}")
     c = report["checks"]
-    print(f"Chromium：{c['playwright_chromium']}  Pillow：{c['pillow']}  ffmpeg：{c['ffmpeg']}  tesseract：{c['tesseract']}")
-    print(f"字体：{', '.join(fonts_have) or '未下载'}（{fd}）  系统中文字体：{', '.join(c['system_cjk_fonts']) or '无'}")
+    print(f"Pillow：{c['pillow']}  ffmpeg：{c['ffmpeg']}  tesseract：{c['tesseract']}")
     print(f".env：{report['env']['env_file'] or '未找到'}  RENDER_MODE={mode_cfg}  图片 API：{report['env']['IMAGE_API']['key']}"
           f"  语音转写：{report['env']['TRANSCRIBE_API']}")
     print(f"工作区：{report['env']['workdir']}")

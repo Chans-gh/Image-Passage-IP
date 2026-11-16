@@ -7,6 +7,9 @@
     python3 call_image_api.py --prompt-file pages/P03/prompt.md --out pages/P03/v1.png \
         [--ref final/P01.png --ref pages/P02/v1.png] [--dry-run]
 
+--ref 传入的是本页需要原样保真的素材：模型应把它们原样嵌入画面，不重绘、不改外观。
+是否真的把参考图交给接口由 IMAGE_API_REFERENCE_MODE 决定（edits / none）。
+
 读取 .env：IMAGE_API_BASE_URL / IMAGE_API_KEY / IMAGE_API_MODEL / IMAGE_API_SIZE /
 IMAGE_API_REFERENCE_MODE / IMAGE_API_QUALITY。结果自动适配为 3:4（1242×1656），
 原始返回图另存为 <out>.raw.png。KEY 不会被打印。
@@ -38,7 +41,8 @@ def main() -> None:
     src.add_argument("--prompt")
     src.add_argument("--prompt-file", type=Path)
     parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--ref", action="append", type=Path, default=[], help="参考图，可多次")
+    parser.add_argument("--ref", action="append", type=Path, default=[],
+                        help="本页需要原样保真的素材（模型应原样嵌入、不重绘），可多次")
     parser.add_argument("--size")
     parser.add_argument("--model")
     parser.add_argument("--fit", default="cover", choices=["cover", "contain", "none"])

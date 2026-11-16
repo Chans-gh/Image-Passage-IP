@@ -66,14 +66,6 @@ def workdir(env: dict[str, str] | None = None) -> Path:
     return Path(wd).expanduser().resolve() if wd else (Path.cwd() / "image-passage-work").resolve()
 
 
-def font_dir(env: dict[str, str] | None = None) -> Path:
-    env = env if env is not None else load_env()[0]
-    fd = env.get("IMAGE_PASSAGE_FONT_DIR") or os.environ.get("IMAGE_PASSAGE_FONT_DIR")
-    if fd:
-        return Path(fd).expanduser()
-    return Path.home() / ".cache" / "image-passage" / "fonts"
-
-
 def output_size(env: dict[str, str] | None = None) -> tuple[int, int]:
     env = env if env is not None else load_env()[0]
     try:

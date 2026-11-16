@@ -8,7 +8,8 @@
   "render": {
     "mode": null,
     "locked": false,
-    "capabilities": {"generate": null, "see": null, "scripts": null},
+    "capabilities": {"generate": null, "see": null},
+    "reference_support": null,
     "qa_mode": null,
     "tool": null,
     "model": null,
