@@ -15,7 +15,7 @@ compatibility: >-
   tesseract with chi_sim (OCR), an OpenAI-compatible
   image or transcription API configured in .env.
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   repository: "https://github.com/chans-gh/Image-Passage-IP"
   language: "zh-CN"
 title: "图文策划与出图"
@@ -66,7 +66,7 @@ read_when:
 | ③ 出图能力 | 判断能不能生图、能不能看图、能不能接收参考图，确定路线和质检方式 | `render-routing.md` | `env_check.py --can-generate … --can-see … --reference-support …` |
 | ④ 范围判断 | 完整套图 / 只策划 / 只文案 / 单页 / 修改 | `workflow.md` 第三节 | — |
 | ⑤ 价值与核实 | 场景、问题、核心观点；R、I；核实事实；横切属性 | `content-templates.md` 第一、二节 | — |
-| ⑥ 策划与文字 | 选 T、F、H、V、C；每页 L、E；写 `plan.md` 与 `copy.md`（标题、正文、标签、首条评论）。**完整套图在此等待确认** | `content-templates.md`、`visual-system.md`、`workflow.md` 第五节 | `check_copy.py` |
+| ⑥ 策划与文字 | 选 T、F、H、V、视觉母题、C；每页 L、E；写 `plan.md` 与 `copy.md`（标题、正文、标签、首条评论）。**完整套图在此等待确认** | `content-templates.md`、`visual-system.md`、`workflow.md` 第五节 | `check_copy.py` |
 | ⑦ P1 与风格锁 | 生成封面；确认后写风格锁（13 项参数、描述版、精确版） | `page-generation.md`、`visual-system.md` 第五节 | `palette.py resolve` |
 | ⑧ 逐页生成 | 规格单 → 编译 → 生成 → 质检 → 采用 / 阻塞 | `page-generation.md` 第六节 | `workspace.py page / adopt / block`、`call_image_api.py`、`check_copy.py --spec-dir` |
 | ⑨ 文案复核 | 按已采用的图核对文案；无矛盾则同步 | `copywriting.md` | `check_copy.py` |

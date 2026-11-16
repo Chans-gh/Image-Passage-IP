@@ -1,6 +1,6 @@
 # Image Passage：图文策划与出图
 
-[English](README.en.md) · MIT License · v0.4.0
+[English](README.en.md) · MIT License · v0.5.0
 
 面向**小红书**和**微信贴图号**的 3:4 图文笔记：把一句话、一段经历或一堆素材，做成一套可以直接发布的图文。
 
