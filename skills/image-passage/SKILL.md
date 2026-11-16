@@ -119,7 +119,7 @@ image-passage-work/<项目名>/
 | 脚本 | 作用 |
 |---|---|
 | `env_check.py` | 环境能力检查，给出路线和质检方式建议 |
-| `workspace.py` | `init` / `new` / `page` / `adopt` / `block` / `status` / `list` |
+| `workspace.py` | `init` / `new` / `page` / `adopt` / `block` / `state` / `status` / `list`（`state` 写 `state.json` 的字段并同步 `updated` 与 `log`） |
 | `extract_input.py` | `doc`（pdf、docx、pptx、xlsx、csv、html…）/ `frames` / `audio` / `transcribe` |
 | `palette.py` | 颜色名 → HEX（`resolve` / `list`） |
 | `call_image_api.py` | 调用图片 API（文生图 / 参考图编辑），适配为 3:4；`--dry-run` 预览请求 |

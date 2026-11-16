@@ -158,6 +158,32 @@ def cmd_block(args: argparse.Namespace) -> None:
     print(f"{page} 已记为待处理：{args.reason}")
 
 
+def cmd_state(args: argparse.Namespace) -> None:
+    """写 state.json 里的一个字段，并同步 updated 与 log。
+
+    确认、锁定、同步这类状态变更（plan.confirmed、render.locked、anchors.P1、
+    copy.*）都走这里。直接改 JSON 会让 updated 和 log 漏记这次改动。
+    值先按 JSON 解析，失败就按字符串写入（`true` → 布尔，`off` → 字符串）。
+    """
+    project = project_dir(args.name)
+    state = read_state(project)
+    try:
+        value = json.loads(args.value)
+    except json.JSONDecodeError:
+        value = args.value
+    keys = args.key.split(".")
+    node = state
+    for k in keys[:-1]:
+        nxt = node.setdefault(k, {})
+        if not isinstance(nxt, dict):
+            die(f"{args.key} 的中间层「{k}」不是对象")
+        node = nxt
+    node[keys[-1]] = value
+    shown = json.dumps(value, ensure_ascii=False)
+    write_state(project, state, args.event or f"{args.key} = {shown}")
+    print(f"{args.key} = {shown}")
+
+
 def cmd_status(args: argparse.Namespace) -> None:
     project = project_dir(args.name)
     state = read_state(project)
@@ -240,6 +266,9 @@ def main() -> None:
     p.set_defaults(func=cmd_adopt)
     p = sub.add_parser("block"); p.add_argument("name"); p.add_argument("page"); p.add_argument("reason")
     p.set_defaults(func=cmd_block)
+    p = sub.add_parser("state"); p.add_argument("name"); p.add_argument("key"); p.add_argument("value")
+    p.add_argument("--event", default=None)
+    p.set_defaults(func=cmd_state)
     p = sub.add_parser("status"); p.add_argument("name"); p.set_defaults(func=cmd_status)
     p = sub.add_parser("list"); p.set_defaults(func=cmd_list)
     args = parser.parse_args()

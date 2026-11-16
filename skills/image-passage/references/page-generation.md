@@ -184,3 +184,13 @@ python3 scripts/image_tools.py sheet <项目>/preview.jpg <项目>/final/P*.png 
 - 默认在对话里只展示图片和简短说明，不展示提示词。
 - profile 里「展示提示词：是」时，每页生成后附上提示词。
 - 文件始终保存，方便复现、排查和修改。
+
+`state.json` 是唯一的项目状态来源。改动它的字段一律用 `workspace.py state`——它会同时更新 `updated` 并在 `log` 追加一条；直接编辑 JSON 会让这两项漏记这次改动。
+
+```bash
+python3 scripts/workspace.py state <项目名> render.locked true
+python3 scripts/workspace.py state <项目名> copy.synced_with_pages true
+python3 scripts/workspace.py state <项目名> config.pagenum off
+```
+
+值先按 JSON 解析，失败就按字符串写入（`true` → 布尔，`off` → 字符串）。`log` 是排查「这一页什么时候被改成这样」的依据，不要绕过它。

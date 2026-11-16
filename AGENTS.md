@@ -41,9 +41,9 @@ Some rules are mirrored in code or data. Change both sides together:
 | Length tiers S0–S4, compliance word lists (`copywriting.md` §五, §九) | `scripts/check_copy.py` (`TIERS`, `ABSOLUTE`, `EFFICACY`, `FINANCE`, `INDUCE`) |
 | Platform limits (`references/platforms/*.md`) | `assets/platforms.json`; `scripts/check_copy.py` (title, body, tags); `scripts/workspace.py status` (image count); the limits line in SKILL.md principle 8 and the READMEs |
 | Final deliverables, first comment, and when the copy is written (`copywriting.md` §十二, §十四) | `templates/copy.md`; `scripts/check_copy.py` (`首条评论` section); `workflow.md` §四 ⑥ (copy written and confirmed with the plan) and §七 report format |
-| Per-page on-image text (`page-generation.md` §四) | `templates/spec.md`; the 逐页策划 section of `templates/plan.md`; `scripts/check_copy.py --plan` / `--spec-dir` |
+| Per-page on-image text (`page-generation.md` §四) | `templates/spec.md`; the 逐页策划 section of `templates/plan.md`; `scripts/check_copy.py --plan` / `--spec-dir` (passing both also diffs the two sources, `text-mismatch`) |
 | Render modes, reference support, `.env` variables (`render-routing.md` §二, §四) | `.env.example`; `scripts/env_check.py`; `scripts/call_image_api.py` |
-| Project files and state (`page-generation.md` §十, `SKILL.md`) | `scripts/workspace.py`; `templates/state.json` |
+| Project files and state (`page-generation.md` §十, `SKILL.md`) | `scripts/workspace.py` (`state` writes one field and syncs `updated` / `log`); `templates/state.json` |
 | Profile fields A–H (`onboarding.md` §三) | `templates/profile.md` |
 
 ## Conventions
@@ -95,6 +95,7 @@ Check copy rules against the baseline sample. For a project, stage ⑥ checks th
 python3 skills/image-passage/scripts/check_copy.py examples/copy-sample.md
 python3 skills/image-passage/scripts/check_copy.py --plan <project>/plan.md
 python3 skills/image-passage/scripts/check_copy.py --spec-dir <project>/pages
+python3 skills/image-passage/scripts/check_copy.py --plan <project>/plan.md --spec-dir <project>/pages   # also diffs the two sources
 ```
 
 Evoke the reference-image path without sending anything:

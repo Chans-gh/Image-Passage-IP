@@ -130,7 +130,7 @@
 7. 写进 `plan.md`（格式见第五节），版本号从 v1 开始。
 8. 写 `copy.md`（模板 `templates/copy.md`）：标题、正文、标签、首条评论。这一阶段就要写成**可以发布的成稿**，不是提纲。（用户只要策划时跳过这一步。）
 9. 运行 `python3 scripts/check_copy.py <项目>/copy.md --plan <项目>/plan.md`，检查发布文案与逐页「上图文字」（合规词、占位词、空文字）。有 error 先改再交付。
-10. `state.json`：`copy.version` 从 1 开始，`copy.synced_with_pages = false`（还没和图片核对过）。
+10. `state.json`：`workspace.py state <项目> copy.version 1`、`workspace.py state <项目> copy.synced_with_pages false`（还没和图片核对过）。
 
 完整套图在这里停下，等待确认（除非已获授权）。**确认 1 交付的是策划和全部文字**：`plan.md`（逐页含图上文字全文）＋ `copy.md` ＋ 检查结果。只要策划的任务到此交付。
 
@@ -139,7 +139,7 @@
 1. 按 `page-generation.md` 生成 P1 封面并质检。
 2. 用户确认（或按授权采用）后，填写 `style-lock.md`：13 项参数、描述版、精确版。
 3. 首张内页完成后，把正文、卡片、表格、图片处理的样式补进风格锁，作为**内页锚点**。不新增确认节点。
-4. `state.json`：`anchors.P1`、`render.locked = true`。
+4. `state.json`：`workspace.py state <项目> anchors.P1.version v1`、`workspace.py state <项目> render.locked true`。
 
 复用已有风格或只改单页时，不重建 P1。
 
@@ -147,7 +147,7 @@
 
 按 `page-generation.md` 第六节的流水线，每页：规格单 → 编译 → 生成 → 质检 → 修正 → 采用（`workspace.py adopt`）。用户已授权继续时连续完成，不逐页询问。被中断后依据 `state.json` 继续，不重复、不漏页。
 
-规格单是第 ⑥ 阶段策划内容的逐页提取，**不在这里新写文案**。写完规格单后用 `python3 scripts/check_copy.py --spec-dir <项目>/pages` 核对一次，确认提取出来的图上文字与 `plan.md` 一致（`spec.md` 的上图文字必须逐字等于策划里那一页的文字）。
+规格单是第 ⑥ 阶段策划内容的逐页提取，**不在这里新写文案**。写完规格单后用 `python3 scripts/check_copy.py --plan <项目>/plan.md --spec-dir <项目>/pages` 核对一次：同一页码的图上文字必须逐字一致，对不上会报 `text-mismatch`，说明提取出错。
 
 ### ⑨ 文案复核与同步
 
@@ -155,7 +155,7 @@
 
 1. 正文与图片不矛盾、不逐页复述图片（`copywriting.md` 第四节）。
 2. 有出入时先判断改哪边：图上文字错了就改图；文案没跟上就改文案。两边都记进 `plan.md` 的变更记录（第六节）。
-3. 复核通过后把 `state.json` 的 `copy.synced_with_pages` 置 `true`；有改动就把 `copy.version` 加一。
+3. 复核通过后把 `copy.synced_with_pages` 置 `true`（`workspace.py state <项目> copy.synced_with_pages true`）；有改动就把 `copy.version` 加一。
 4. 再跑一次 `python3 scripts/check_copy.py <项目>/copy.md --spec-dir <项目>/pages`，确认改完仍然通过。
 
 ### ⑩ 复核与交付

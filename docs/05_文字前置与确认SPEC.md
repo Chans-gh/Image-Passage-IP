@@ -49,7 +49,9 @@
 | `templates/plan.md` | 「发布文案方向」加注释：这一节只写方向，成稿在 `copy.md`；页码行补 `off` 写法 |
 | `templates/copy.md` | 头部注释补产出时机与新的检查命令 |
 | `templates/spec.md` | 「上图文字」注释补「本页没有文字时整行写『- 无文字』」 |
-| `scripts/check_copy.py` | 新增 `--plan <路径>` 与 `--spec-dir <目录>`；抽出 `declares_no_text()`、`spec_page_lines()`、`plan_text_area()`、`plan_pages()`、`spec_dir_pages()`、`check_pages()` |
+| `scripts/check_copy.py` | 新增 `--plan <路径>` 与 `--spec-dir <目录>`；抽出 `declares_no_text()`、`spec_page_lines()`、`plan_text_area()`、`plan_pages()`、`spec_dir_pages()`、`check_pages()`、`compare_sources()`；`spec.sources[].pages[]` 增加 `unmarked` / `no_text` |
+| `scripts/workspace.py` | 新增 `state <项目> <字段> <值> [--event]`：写 `state.json` 的一个字段并同步 `updated` 与 `log`，供 ⑥⑦⑨ 的确认、锁定、同步使用 |
+| `references/page-generation.md` | §十 补「改 `state.json` 一律用 `workspace.py state`」与原因 |
 | `AGENTS.md` | 镜像表补「逐页上图文字」行、更新「最终交付四项」行；Conventions 的交付四项补产出时机；Verifying changes 补三条命令 |
 | `README.md` / `README.en.md` | 流程图一行改为「策划与文案 → 逐页出图 → 文案复核」；质检一条补图上文字检查 |
 | `CHANGELOG.md` | 扩写 `[0.3.0]`：新增「确认 1 含全部文字」破坏性条目与 `--plan` / `--spec-dir` 新增条目 |
@@ -72,8 +74,8 @@ python3 scripts/check_copy.py --spec-dir <项目>/pages
 三个设计取舍：
 
 - 第六阶段用 `--plan` 而不是 `--spec-dir`：`pages/PNN/spec.md` 要到第八阶段才由 `workspace.py page` 从 `plan.md` 提取生成，第六阶段跑 `--spec-dir` 是空的。
-- 同一页码在两个来源分别报告、不合并：两者不一致本身就是「提取出错」的信号。
-- 纯图页在图上的文字处写「无文字」即视为本页无文字，不报空文字错误；带 `「」` 的行不参与这个判断，避免把主标题恰好是「无文字」的页误判成纯图页。
+- 两个来源各自报告，同时给出**逐页比对**：两个都传时，同一页码的图上文字必须一致，不一致报 `text-mismatch`。只比文字，不比层级名——两边的层级命名本来就不一样。所以第八阶段可以只跑一条命令同时完成检查与核对。
+- 纯图页在图上的文字处**整行**写「无文字」才算声明：带 `「」` 的行、或标记句之外还有别的内容，都按「本页有文字」处理。判定必须看整节而不是某一行——只看单行会让同页其他行的空文字、占位词和合规词一起被静默跳过。
 
 `issues[].type` 分两类，看来源还是看内容：
 
@@ -82,8 +84,11 @@ python3 scripts/check_copy.py --spec-dir <项目>/pages
 | `plan` / `plan-empty` | `plan.md` 结构问题：没有「上图文字」小节 / 小节里没有任何内容 |
 | `spec` | `spec.md` 结构问题：缺少该小节，或 `--spec-dir` 下一个 `P*/spec.md` 都没有 |
 | `text-*` | 图上文字的内容问题，**两个来源共用**：`text-empty`（空「」）、`text-placeholder`（占位词）、`text-absolute` / `text-efficacy` / `text-finance` / `text-induce` / `text-banned`（合规）、`text-count` 与 `text-none`（清单，info 级）、`text-unmarked`（未用「」标注，无法检查） |
+| `text-mismatch` | 两个来源同时给出时，同一页码的图上文字对不上（`spec.md` 提取出错） |
 
 `text-*` 用来源中立的命名，是因为同一套内容检查对两个来源完全一致；**来源由 `detail` 里的文件名区分**，所以 `text-empty` 可能来自 `plan.md`，也可能来自 `spec.md`。
+
+`spec.sources[].pages[]` 每页给四个字段：`page`、`lines`（逐条 `level` / `text` / `count`）、`unmarked`（未用「」标注的行）、`no_text`（本页是否声明无文字）。
 
 ## 六、验证
 
@@ -97,9 +102,15 @@ python3 skills/image-passage/scripts/check_copy.py --spec-dir <项目>/pages
 
 # 逐字清单可直接照抄核对
 python3 skills/image-passage/scripts/check_copy.py --plan <项目>/plan.md
+
+# 第八阶段：一个命令同时做内容检查与两个来源的逐页比对
+python3 skills/image-passage/scripts/check_copy.py --plan <项目>/plan.md --spec-dir <项目>/pages
+#   error  text-mismatch | P01 的图上文字在 plan.md 与 spec.md 里不一致：……
 ```
 
-覆盖的分支：空 `「」`（模板初始态）报 error；填了两条、留一条空时报那一条；整节写「无文字」（同行内联 / 嵌套 / 独立行）只报 info；主标题恰好是「无文字」时按普通文字统计。
+覆盖的分支：空 `「」`（模板初始态）报 error；填了两条、留一条空时报那一条；整节写「无文字」（同行内联 / 嵌套 / 独立行）只报 info；主标题恰好是「无文字」时按普通文字统计；两个来源对不上时报 `text-mismatch`。
+
+**回归项（必须一直成立）**：同一页里既有正文又有一行裸「无」时，正文的合规检查**不能**被跳过。判定看整节而不是单行，就是为了这个。
 
 ## 七、明确不做的事
 

@@ -54,8 +54,10 @@ SPEC_SECTION = "上图文字"
 SPEC_QUOTE_RE = re.compile(r"「(.*?)」")
 # 占位词：对应 page-generation.md 第五节的硬规则——「待补素材」不能作为最终页面里的占位内容
 SPEC_PLACEHOLDERS = ["待补", "待定", "待填", "TODO", "TBD", "占位", "稍后补", "XXXX", "×××"]
-# 纯图页的显式声明：整行就是这些标记之一时，本页视为没有图上文字，不报空文字
-NO_TEXT_MARKERS = {"无文字", "无图上文字", "不出现文字", "留白", "无"}
+# 纯图页的显式声明：整节的文字就是这一句时，本页视为没有图上文字，不报空文字。
+# 只收规则里定义过的写法（page-generation.md 第五节、workflow.md 第五节）。
+# 不要收裸「无」这类近义词——任何一行撞上就会让整页的合规检查被静默跳过。
+NO_TEXT_MARKERS = {"无文字", "无图上文字"}
 
 
 def count_chars(text: str) -> int:
@@ -121,19 +123,23 @@ def level_of(line: str) -> str:
 
 
 def declares_no_text(rows: list[str]) -> bool:
-    """整行只是「无文字」这类声明时，本页视为没有图上文字。
+    """整页声明「本页没有图上文字」。
 
-    带「」的行不算，避免把主标题恰好是「无文字」的页误判成纯图页。
+    只有整节内容就是这一句时才算数：任何一行带「」，或标记句之外还有别的内容，
+    都按「本页有文字」处理。只看单行会把同页其他行的空文字、占位词和合规词一起
+    静默跳过——那等于放过违规内容。
     """
+    values: list[str] = []
     for row in rows:
         if "「" in row:
-            continue
+            return False
         value = re.sub(r"^[-*·—]\s*", "", row.strip())
         if "：" in value or ":" in value:
             value = re.split(r"[：:]", value)[-1]
-        if value.strip() in NO_TEXT_MARKERS:
-            return True
-    return False
+        value = value.strip()
+        if value:
+            values.append(value)
+    return len(values) == 1 and values[0] in NO_TEXT_MARKERS
 
 
 def spec_page_lines(path: Path) -> tuple[list[dict], list[dict], bool] | None:
@@ -295,7 +301,27 @@ def check_pages(kind: str, path: Path, pages: list[dict], add, commercial: bool,
         add("error", "text-banned", "图上文字账号禁用词：" + locate_hits(hits, located))
 
     return {"kind": kind, "path": str(path),
-            "pages": [{"page": pg["page"], "lines": pg["lines"]} for pg in pages]}
+            "pages": [{"page": pg["page"], "lines": pg["lines"],
+                       "unmarked": pg["unmarked"], "no_text": pg["no_text"]} for pg in pages]}
+
+
+def compare_sources(plan_src: dict, spec_src: dict, add) -> None:
+    """同一页码在两个来源里的图上文字必须一致。
+
+    spec.md 是从 plan.md 提取出来的，对不上就说明提取出错。只比文字本身，
+    不比层级名——两边的层级命名本来就不一样（plan.md 写「副标题」，模板的
+    spec.md 可能写「正文」）。
+    """
+    plan_map = {pg["page"]: pg for pg in plan_src["pages"]}
+    spec_map = {pg["page"]: pg for pg in spec_src["pages"]}
+    for page in sorted(set(plan_map) & set(spec_map)):
+        a = [item["text"] for item in plan_map[page]["lines"]]
+        b = [item["text"] for item in spec_map[page]["lines"]]
+        if a != b:
+            add("error", "text-mismatch",
+                f"{page} 的图上文字在 plan.md 与 spec.md 里不一致："
+                f"plan.md {'／'.join(a) if a else '（空）'}"
+                f" ／ spec.md {'／'.join(b) if b else '（空）'}")
 
 
 def main() -> None:
@@ -418,6 +444,8 @@ def main() -> None:
         sources.append(check_pages("plan", args.plan, plan_pages(args.plan, add), add, commercial, args.profile))
     if args.spec_dir is not None:
         sources.append(check_pages("spec-dir", args.spec_dir, spec_dir_pages(args.spec_dir, add), add, commercial, args.profile))
+    if len(sources) == 2:
+        compare_sources(sources[0], sources[1], add)
     spec = None
     if sources:
         spec = {"sources": sources,
