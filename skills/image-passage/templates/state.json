@@ -24,7 +24,7 @@
     "pagenum": "B",
     "character": null
   },
-  "plan": {"version": 0, "confirmed": false, "confirmed_version": null, "confirmed_by": null},
+  "plan": {"version": 0, "confirmed_version": null, "confirmed_by": null},
   "anchors": {
     "P1": {"version": null, "status": null},
     "inner": {"page": null, "version": null}
