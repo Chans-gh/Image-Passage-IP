@@ -5,7 +5,6 @@
 image-passage-work/
 
 # 缓存与临时产物
-.fonts/
 *.pyc
 __pycache__/
 node_modules/
