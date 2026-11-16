@@ -438,7 +438,7 @@ grep -rn "svg\|render_page\|base\.css\|html-recipes\|fetch_fonts\|compose_H\|tok
   skills/ *.md llms.txt .env.example .gitignore | grep -v "已停用" | grep -v CHANGELOG
 ```
 
-期望：无输出（`docs/00–03` 与 `docs/source-v3.1/` 属历史归档，不在检查范围）。
+期望：无输出（`docs/` 下的设计文档不在检查范围）。
 
 ### 10.6 无新增限制的检查
 

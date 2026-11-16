@@ -129,7 +129,7 @@ skills/image-passage/    技能本体
 ├── templates/           项目文件模板（plan、spec、style-lock、state.json…）
 ├── scripts/             Python 脚本（质检、接口、素材提取）
 └── assets/              颜色表、平台预设
-docs/                    设计文档与 V3.1 原始规则归档
+docs/                    设计文档
 ```
 
 给 AI 的文档：安装步骤见 [INSTALL.md](INSTALL.md)，使用与维护说明见 [AGENTS.md](AGENTS.md)，文件索引见 [llms.txt](llms.txt)。
@@ -144,7 +144,6 @@ docs/                    设计文档与 V3.1 原始规则归档
 | [docs/03_运作流程.md](docs/03_运作流程.md) | 运作流程：初始化与个性化、输入形式与组合、出图方式与质检 |
 | [docs/04_渲染路线精简SPEC.md](docs/04_渲染路线精简SPEC.md) | 渲染路线精简：两条路线、一种构成、参考图能力项 |
 | [docs/05_文字前置与确认SPEC.md](docs/05_文字前置与确认SPEC.md) | 文字前置与确认：确认 1 含全部文字、图上文字检查 |
-| [docs/source-v3.1/](docs/source-v3.1/) | V3.1 原始规则归档（只读，迁移对照用） |
 
 ## 待完善
 

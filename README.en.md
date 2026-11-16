@@ -136,7 +136,7 @@ skills/image-passage/    The skill
 ├── templates/           Project file templates
 ├── scripts/             Python scripts (QA, API, input extraction)
 └── assets/              Colour table, platform presets
-docs/                    Design docs (Chinese) and the archived V3.1 source rules
+docs/                    Design docs (Chinese)
 ```
 
 Maintainer notes for AI agents are in [AGENTS.md](AGENTS.md). A file index is in [llms.txt](llms.txt).

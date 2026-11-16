@@ -69,11 +69,21 @@ python3 scripts/check_copy.py --spec-dir <项目>/pages
 
 **不能做**：**错别字与繁简混用无法用词表可靠检出**。这几项仍要靠看图或人工逐字核对，不因为跑了脚本就算通过。
 
-两个设计取舍：
+三个设计取舍：
 
 - 第六阶段用 `--plan` 而不是 `--spec-dir`：`pages/PNN/spec.md` 要到第八阶段才由 `workspace.py page` 从 `plan.md` 提取生成，第六阶段跑 `--spec-dir` 是空的。
 - 同一页码在两个来源分别报告、不合并：两者不一致本身就是「提取出错」的信号。
 - 纯图页在图上的文字处写「无文字」即视为本页无文字，不报空文字错误；带 `「」` 的行不参与这个判断，避免把主标题恰好是「无文字」的页误判成纯图页。
+
+`issues[].type` 分两类，看来源还是看内容：
+
+| 类型 | 含义 |
+|---|---|
+| `plan` / `plan-empty` | `plan.md` 结构问题：没有「上图文字」小节 / 小节里没有任何内容 |
+| `spec` | `spec.md` 结构问题：缺少该小节，或 `--spec-dir` 下一个 `P*/spec.md` 都没有 |
+| `text-*` | 图上文字的内容问题，**两个来源共用**：`text-empty`（空「」）、`text-placeholder`（占位词）、`text-absolute` / `text-efficacy` / `text-finance` / `text-induce` / `text-banned`（合规）、`text-count` 与 `text-none`（清单，info 级）、`text-unmarked`（未用「」标注，无法检查） |
+
+`text-*` 用来源中立的命名，是因为同一套内容检查对两个来源完全一致；**来源由 `detail` 里的文件名区分**，所以 `text-empty` 可能来自 `plan.md`，也可能来自 `spec.md`。
 
 ## 六、验证
 
@@ -83,7 +93,7 @@ python3 skills/image-passage/scripts/check_copy.py examples/copy-sample.md   # e
 
 # 纯图页不误报
 python3 skills/image-passage/scripts/check_copy.py --spec-dir <项目>/pages
-#   info  spec-none | spec.md P03 声明本页无图上文字
+#   info  text-none | spec.md P03 声明本页无图上文字
 
 # 逐字清单可直接照抄核对
 python3 skills/image-passage/scripts/check_copy.py --plan <项目>/plan.md

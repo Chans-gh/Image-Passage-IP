@@ -27,7 +27,7 @@ Working language for users is Simplified Chinese. Work files go to `./image-pass
 | `.codebuddy-plugin/plugin.json` | WorkBuddy expert manifest. |
 | `examples/copy-sample.md` | Copy baseline for `check_copy.py`. |
 | `INSTALL.md` | Step-by-step install guide written for AI agents. Keep commands in sync with README and the scripts. |
-| `docs/` | Design docs (00–05) and `source-v3.1/`, the read-only archive of the original rules. Not loaded at runtime. |
+| `docs/` | Design docs (00–05). Not loaded at runtime. |
 
 ## Where each rule is defined
 

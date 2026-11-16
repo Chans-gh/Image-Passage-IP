@@ -40,4 +40,4 @@ To install it for a user, follow INSTALL.md. To use the skill, read skills/image
 
 - [templates/](skills/image-passage/templates/): project file templates
 - [assets/](skills/image-passage/assets/): colors.json, platforms.json
-- [docs/](docs/00_基础方案.md): design docs and the archived V3.1 source rules
+- [docs/](docs/00_基础方案.md): design docs

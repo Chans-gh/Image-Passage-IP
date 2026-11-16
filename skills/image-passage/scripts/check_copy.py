@@ -255,43 +255,44 @@ def locate_hits(hits: list[str], located: list[tuple[str, dict]]) -> str:
 def check_pages(kind: str, path: Path, pages: list[dict], add, commercial: bool, profile: Path | None) -> dict:
     """对一份来源的全部页做同一套图上文字检查，返回报告片段。
 
-    空文字、占位词、合规词、字数清单四种检查对 plan.md 和 spec.md 完全一致。
+    空文字、占位词、合规词、字数清单四种检查对 plan.md 和 spec.md 完全一致，
+    所以这几种 issue 的类型用来源中立的 text-* 前缀；来源由 detail 里的文件名区分。
     """
     prefix = "plan.md" if kind == "plan" else "spec.md"
     located: list[tuple[str, dict]] = []
     for pg in pages:
         head = f"{prefix} {pg['page']}"
         if pg.get("no_text"):
-            add("info", "spec-none", f"{head} 声明本页无图上文字")
+            add("info", "text-none", f"{head} 声明本页无图上文字")
             continue
         for item in pg["unmarked"]:
-            add("info", "spec", f"{head} 的「{item['raw']}」未用「」标注，无法检查")
+            add("info", "text-unmarked", f"{head} 的「{item['raw']}」未用「」标注，无法检查")
         for item in pg["lines"]:
             where = f"{head} 的「{item['level']}」"
             located.append((where, item))
             if not item["text"].strip():
-                add("error", "spec-empty", f"{where}是空的（模板初始状态或尚未填写）")
+                add("error", "text-empty", f"{where}是空的（模板初始状态或尚未填写）")
             hits = find(item["text"], SPEC_PLACEHOLDERS)
             if hits:
-                add("error", "spec-placeholder", f"{where}含占位词：" + "、".join(hits))
+                add("error", "text-placeholder", f"{where}含占位词：" + "、".join(hits))
         if pg["lines"]:
             total = sum(item["count"] for item in pg["lines"])
-            add("info", "spec-count", f"{head} 上图文字共 {total} 字")
+            add("info", "text-count", f"{head} 上图文字共 {total} 字")
 
     joined = "\n".join(item["text"] for _, item in located)
     hits = find(joined, ABSOLUTE)
     if hits:
-        add("error" if commercial else "warning", "spec-absolute",
+        add("error" if commercial else "warning", "text-absolute",
             "图上文字绝对化用语：" + locate_hits(hits, located))
-    for words, issue_kind, label in [(EFFICACY, "spec-efficacy", "功效宣称"),
-                                     (FINANCE, "spec-finance", "收益承诺"),
-                                     (INDUCE, "spec-induce", "诱导互动")]:
+    for words, issue_kind, label in [(EFFICACY, "text-efficacy", "功效宣称"),
+                                     (FINANCE, "text-finance", "收益承诺"),
+                                     (INDUCE, "text-induce", "诱导互动")]:
         hits = find(joined, words)
         if hits:
             add("error", issue_kind, "图上文字" + label + "：" + locate_hits(hits, located))
     hits = find(joined, profile_banned(profile))
     if hits:
-        add("error", "spec-banned", "图上文字账号禁用词：" + locate_hits(hits, located))
+        add("error", "text-banned", "图上文字账号禁用词：" + locate_hits(hits, located))
 
     return {"kind": kind, "path": str(path),
             "pages": [{"page": pg["page"], "lines": pg["lines"]} for pg in pages]}
