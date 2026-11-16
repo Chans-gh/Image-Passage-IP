@@ -294,7 +294,7 @@
 | `llms.txt` | 第 25 行删除 html-recipes 条目；第 33 行删除 render_page 条目；第 39 行删除 `fetch_fonts.py`；第 44 行 assets 清单去掉 `fonts.json`、`css/base.css`；第 45 行删除 demo 条目 |
 | `CHANGELOG.md` | 新增 `## [0.3.0] - <日期>`，含「移除 / 变更 / 新增」三节（见 §11.3） |
 | `.env.example` | `RENDER_MODE` 注释去掉 `svg`，改为只列 auto / native / api；删除 `IMAGE_PASSAGE_FONT_DIR` 两行；`IMAGE_API_REFERENCE_MODE` 说明强化（保真素材必需） |
-| `.gitignore` | 第 13 行删除 `examples/demo/render/base.css`；第 7 行注释「字体缓存与渲染产物」改为「缓存与产物」，`.fonts/` 可保留 |
+| `.gitignore` | 第 13 行删除 `examples/demo/render/base.css`；第 7 行注释「字体缓存与渲染产物」改为「缓存与产物」；`.fonts/` 一并删除（字体下载已移除，这条规则不再对应任何东西）。该文件只作用于本仓库，不影响用户自己项目的 `.gitignore` |
 | `.claude-plugin/plugin.json` | `version` → 0.3.0 |
 | `.codebuddy-plugin/plugin.json` | `version` → 0.3.0 |
 | `docs/04_渲染路线精简SPEC.md` | 本文件（新增） |
