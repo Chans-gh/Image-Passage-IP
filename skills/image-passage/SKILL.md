@@ -15,7 +15,7 @@ compatibility: >-
   tesseract with chi_sim (OCR), an OpenAI-compatible
   image or transcription API configured in .env.
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
   repository: "https://github.com/chans-gh/Image-Passage-IP"
   language: "zh-CN"
 title: "图文策划与出图"
