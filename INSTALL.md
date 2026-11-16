@@ -120,6 +120,15 @@ Tell the user, in Chinese:
 git -C "$HOME/.local/share/image-passage" pull --ff-only
 ```
 
+`git pull` 只删**被跟踪**的文件。0.2.0 及更早的版本里，`workspace.py new` 会把 `assets/css/base.css` 复制进项目目录，那份副本当时被 `.gitignore` 忽略、从未被跟踪；升级后忽略规则已随文件一起删除，它就成了未跟踪残留，让 `git status` 变脏。升级后清一次：
+
+```bash
+rm -rf "$HOME/.local/share/image-passage/examples/demo"
+git -C "$HOME/.local/share/image-passage" status --porcelain   # 期望无输出
+```
+
+用户自己的工作区（`./image-passage-work/`）里也可能有同样来源的残留：`render/base.css`、`render/tokens.css`、`pages/PNN/page.html`、`base.png`。**那些属于用户数据，不要自动删**——在交付报告里列一次，由用户决定。
+
 To uninstall, remove the symlink you created in step 2 and the clone.
 
 ```bash

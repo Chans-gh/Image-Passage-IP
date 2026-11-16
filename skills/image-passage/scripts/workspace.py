@@ -161,7 +161,7 @@ def cmd_block(args: argparse.Namespace) -> None:
 def cmd_state(args: argparse.Namespace) -> None:
     """写 state.json 里的一个字段，并同步 updated 与 log。
 
-    确认、锁定、同步这类状态变更（plan.confirmed、render.locked、anchors.P1、
+    确认、锁定、同步这类状态变更（plan.confirmed_version、render.locked、anchors.P1、
     copy.*）都走这里。直接改 JSON 会让 updated 和 log 漏记这次改动。
     值先按 JSON 解析，失败就按字符串写入（`true` → 布尔，`off` → 字符串）。
     """

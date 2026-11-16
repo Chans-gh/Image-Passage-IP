@@ -80,6 +80,19 @@
 
 所有确认、授权都写进 `state.json`（`plan`、`anchors`、`authorization`），继续时从这里恢复，不让用户重复确认。
 
+授权落到三个字段，用 `workspace.py state` 写：
+
+| 字段 | 含义 |
+|---|---|
+| `authorization.skip_plan_confirm` | 跳过「确认策划与全部文字」 |
+| `authorization.skip_p1_confirm` | 跳过 P1 风格确认 |
+| `authorization.continue_all` | 授权连续完成，不逐页询问 |
+| `authorization.note` | 授权原话和范围 |
+
+只跳过用户说到的那个节点，其余节点照常确认。`note` 记原话，避免下次恢复时把范围放大。
+
+策划的确认状态看 `plan.confirmed_version`（非空即已确认）和 `plan.confirmed_by`，**没有单独的布尔字段**——两者不一致只会让 `workspace.py status` 显示错误状态。
+
 ## 四、阶段步骤
 
 ```
